@@ -57,11 +57,11 @@ public class Card : MonoBehaviour
 
         if (faceUp)
         {
-            endRot = Quaternion.LookRotation(forward: Vector3.down, upwards: Vector3.back);
+            endRot = Quaternion.LookRotation(forward: Vector3.down, upwards: Vector3.forward);
         }
         else
         {
-            endRot = Quaternion.LookRotation(forward: Vector3.up, upwards: Vector3.back);
+            endRot = Quaternion.LookRotation(forward: Vector3.up, upwards: Vector3.forward);
         }
 
         moving = true;

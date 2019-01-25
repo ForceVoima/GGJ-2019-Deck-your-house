@@ -22,7 +22,7 @@ GameObject:
   - component: {fileID: 223040050435798162}
   - component: {fileID: 114706878155073384}
   - component: {fileID: 114487853105657956}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Canvas
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -38,7 +38,8 @@ GameObject:
   m_Component:
   - component: {fileID: 4210522720785362}
   - component: {fileID: 114192767590949744}
-  m_Layer: 0
+  - component: {fileID: 65418714019750960}
+  m_Layer: 8
   m_Name: Card-default
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -55,7 +56,7 @@ GameObject:
   - component: {fileID: 224348606760981948}
   - component: {fileID: 222950467737627994}
   - component: {fileID: 114395515466580076}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Number
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -72,7 +73,7 @@ GameObject:
   - component: {fileID: 224797842001721950}
   - component: {fileID: 222729763642909948}
   - component: {fileID: 114703606367187282}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Value-SUM
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -89,7 +90,7 @@ GameObject:
   - component: {fileID: 4783649134493992}
   - component: {fileID: 33553601319561094}
   - component: {fileID: 23267167849498192}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Mesh
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -106,7 +107,7 @@ GameObject:
   - component: {fileID: 224943523225281078}
   - component: {fileID: 222010685029413228}
   - component: {fileID: 114607498066391290}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Value-theirs
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -123,7 +124,7 @@ GameObject:
   - component: {fileID: 224158873818168052}
   - component: {fileID: 222996972957348070}
   - component: {fileID: 114664290876182616}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Number
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -140,7 +141,7 @@ GameObject:
   - component: {fileID: 224096408752045754}
   - component: {fileID: 222279836161194608}
   - component: {fileID: 114169800264362082}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Description
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -157,7 +158,7 @@ GameObject:
   - component: {fileID: 224828776916672340}
   - component: {fileID: 222971187155797808}
   - component: {fileID: 114205070305726470}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Value-yours
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -174,7 +175,7 @@ GameObject:
   - component: {fileID: 224258962389653674}
   - component: {fileID: 222231772356862012}
   - component: {fileID: 114589004816207872}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Name
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -187,28 +188,28 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1123094802283412}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: 0, y: -0.7071068, z: -0.7071068, w: 0}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 4783649134493992}
   m_Father: {fileID: 0}
   m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 270, y: 180, z: 0}
 --- !u!4 &4783649134493992
 Transform:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1428227688946232}
-  m_LocalRotation: {x: -0, y: 1, z: -0, w: 0}
+  m_LocalRotation: {x: 0.7071068, y: 0, z: 0, w: 0.7071068}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 224102955510481318}
   m_Father: {fileID: 4210522720785362}
   m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 180, z: 0}
+  m_LocalEulerAnglesHint: {x: 90, y: 0, z: 0}
 --- !u!23 &23267167849498192
 MeshRenderer:
   m_ObjectHideFlags: 1
@@ -250,6 +251,18 @@ MeshFilter:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1428227688946232}
   m_Mesh: {fileID: 4300000, guid: ff7d714ef7c865742afaad4f0e0f7303, type: 3}
+--- !u!65 &65418714019750960
+BoxCollider:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1123094802283412}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 2.5, y: 3.5, z: 0.1}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &114169800264362082
 MonoBehaviour:
   m_ObjectHideFlags: 1
