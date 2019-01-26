@@ -21,7 +21,7 @@ public class TableGrid : CardHolder, IHolder
             deck[i].PutIn(this);
         }
 
-        StartCoroutine( DealGrid() );
+        StartCoroutine( DealGrid(deck) );
     }
 
     private void SetupLayout()
@@ -46,7 +46,7 @@ public class TableGrid : CardHolder, IHolder
         }
     }
 
-    IEnumerator DealGrid()
+    IEnumerator DealGrid(Card[] deck)
     {
         float yPos = -(height - 1) * verticalSpacing / 2f;
         Vector3 position = new Vector3(0f, 0f, yPos);
@@ -59,7 +59,7 @@ public class TableGrid : CardHolder, IHolder
             for (int x = 1; x <= width; x++)
             {
                 // cards[cardNumber].transform.position = position;
-                cards[cardNumber].InitMove(position, true);
+                deck[cardNumber].InitMove(position, true);
 
                 position.x += horizontalSpacing;
                 cardNumber++;
