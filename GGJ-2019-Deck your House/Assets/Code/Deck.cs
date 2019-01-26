@@ -14,7 +14,10 @@ public class Deck : CardHolder
             position = cards[i].transform.position;
             position.y += i * cardThickness;
             cards[i].transform.position = position;
+            cards[i].transform.rotation = Quaternion.LookRotation(Vector3.down, Vector3.forward);
         }
+
+        cards.Reverse();
     }
 
     public Card[] GetWholeDeck()

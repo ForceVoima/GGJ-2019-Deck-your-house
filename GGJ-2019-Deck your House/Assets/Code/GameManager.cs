@@ -36,22 +36,31 @@ public class GameManager : MonoBehaviour
         Card,
         RatingConfirmation,
         CardSlot,
-        Discard
+        CardSlotOrDiscard,
+        Discard,
+        Continue
     }
 
     public Expecting expecting = Expecting.Card;
 
     public enum Phase
     {
-        RatingsPlayer1,
-        RatingsPlayer2,
-        Deal6,
-        Player1Turn,
-        Player2Turn,
+        RatingsPlayer,
+        NormalTurns,
         EndScreen
     }
 
-    public Phase phase = Phase.RatingsPlayer1;
+    public Phase phase = Phase.RatingsPlayer;
+
+    public enum TurnPhase
+    {
+        Wait1,
+        Player1,
+        Wait2,
+        Player2
+    }
+
+    public TurnPhase turnPhase = TurnPhase.Wait1;
 #endregion Enums
 
     public Card selectedCard = null;
@@ -60,18 +69,25 @@ public class GameManager : MonoBehaviour
     public TableGrid tableGrid;
     public Deck deck;
 
+    public Hand player1Hand;
+    public Hand player2Hand;
+
+    [Range(0, 5)]
+    public int turnNumber = 0;
+
     public void Start()
     {
         if (focalPoint == null)
             focalPoint = transform.Find("Focal point").transform;
 
-        phase = Phase.RatingsPlayer1;
+        phase = Phase.RatingsPlayer;
         expecting = Expecting.Card;
 
         deck.Initialize();
-        deck.Organize();
 
-        tableGrid.Reset( deck.GetWholeDeck() );
+        UI.Instance.ShowUI(true);
+        UI.Instance.UpdateText("Player 1. Rate the your cards from 10 to -10:", "Continue");
+        turnNumber = 0;
     }
 
     public void CardSelected(Card card)
@@ -79,20 +95,19 @@ public class GameManager : MonoBehaviour
         if (!card.Selectable)
             return;
 
-        if (phase == Phase.RatingsPlayer1)
+        if (phase == Phase.RatingsPlayer)
         {
-            RatingPlayer1(card);
-        }
-        else if (phase == Phase.RatingsPlayer2)
-        {
-            RatingPlayer2(card);
+            if (turnPhase == TurnPhase.Player1 ||
+                turnPhase == TurnPhase.Player2)
+            {
+                RatingPlayer(card);
+            }
         }
     }
 
     public void NoneSelected()
     {
-        if (phase == Phase.RatingsPlayer1 ||
-            phase == Phase.RatingsPlayer2)
+        if (phase == Phase.RatingsPlayer)
         {
             if (expecting == Expecting.RatingConfirmation &&
                 selectedCard != null)
@@ -102,37 +117,144 @@ public class GameManager : MonoBehaviour
         }
     }
 
-#region Ratings
-
-    private void RatingPlayer1(Card card)
+    public void ContinueSelected()
     {
-        if ( (expecting == Expecting.Card ||
-              selectedCard == null) &&
-              !card.player1Rated )
+        if (turnPhase == TurnPhase.Wait1 ||
+            turnPhase == TurnPhase.Wait2)
         {
-            FocusCard(card);
+            InitNextTurn();
         }
-        else if (expecting == Expecting.RatingConfirmation)
+        else
+            Debug.Log("How did someone press continue here?");
+    }
+
+    private void InitNextTurn()
+    {
+        if (phase == Phase.RatingsPlayer)
         {
-            if (selectedCard == card)
-            {
-                card.PutIn(deck: deck, changeOwner: true);
-                card.Player1Rating(ratingToGive);
-                NextRating();
-            }
-            else
-            {
-                DeFocusCard(selectedCard);
-                FocusCard(card);
-            }
+            NextRatingTurn();
+        }
+
+        else if (phase == Phase.NormalTurns)
+        {
+            NextNormalTurn();
         }
     }
 
-    private void RatingPlayer2(Card card)
+    private void NextRatingTurn()
+    {
+        if (turnPhase == TurnPhase.Wait1)
+        {
+            turnPhase = TurnPhase.Player1;
+            expecting = Expecting.Card;
+            ratingToGive = 10;
+            UI.Instance.ShowUI(false);
+
+            deck.Organize();
+            tableGrid.Reset(deck.GetWholeDeck());
+        }
+        else if (turnPhase == TurnPhase.Player1)
+        {
+            turnPhase = TurnPhase.Wait2;
+            expecting = Expecting.Continue;
+            
+            UI.Instance.ShowUI(true);
+            UI.Instance.UpdateText("Player 2: Rate your cards from 10 to -10:", "Continue");
+        }
+        else if (turnPhase == TurnPhase.Wait2)
+        {
+            turnPhase = TurnPhase.Player2;
+            expecting = Expecting.Card;
+            ratingToGive = 10;
+            UI.Instance.ShowUI(false);
+
+            deck.Organize();
+            tableGrid.Reset(deck.GetWholeDeck());
+        }
+        else if (turnPhase == TurnPhase.Player2)
+        {
+            // Load instructions for Player 1 turn 1
+            phase = Phase.NormalTurns;
+            turnPhase = TurnPhase.Wait1;
+            expecting = Expecting.Continue;
+
+            turnNumber = 1;
+
+            UI.Instance.ShowUI(true);
+            UI.Instance.UpdateText("Hand the device to player 1.", "Turn " + turnNumber);
+        }
+    }
+
+    private void NextNormalTurn()
+    {
+        if (turnPhase == TurnPhase.Wait1)
+        {
+            turnPhase = TurnPhase.Player1;
+            expecting = Expecting.Card;
+            UI.Instance.ShowUI(false);
+
+            if (turnNumber == 1)
+            {
+                // deck.Organize();
+                // player1Hand.Deal6(deck.Deal6());
+            }
+            else if (turnNumber >= 2 &&
+                     turnNumber <= 3)
+            {
+                // Deal 2 cards!
+            }
+        }
+        else if (turnPhase == TurnPhase.Player1)
+        {
+            turnPhase = TurnPhase.Wait2;
+            expecting = Expecting.Continue;
+
+            UI.Instance.ShowUI(true);
+            UI.Instance.UpdateText("Hand the device to player 2.", "Turn " + turnNumber);
+        }
+        else if (turnPhase == TurnPhase.Wait2)
+        {
+            turnPhase = TurnPhase.Player2;
+            expecting = Expecting.Card;
+            ratingToGive = 10;
+            UI.Instance.ShowUI(false);
+
+            if (turnNumber == 1)
+            {
+                // player1Hand.Deal6(deck.Deal6());
+            }
+            else if (turnNumber >= 2 &&
+                     turnNumber <= 3)
+            {
+                // Deal 2 cards!
+            }
+        }
+        else if (turnPhase == TurnPhase.Player2)
+        {
+            if (turnNumber == 5)
+            {
+                phase = Phase.EndScreen;
+                return;
+            }
+
+            turnPhase = TurnPhase.Wait1;
+            expecting = Expecting.Continue;
+
+            turnNumber++;
+
+            UI.Instance.ShowUI(true);
+            UI.Instance.UpdateText("Hand the device to player 1.", "Turn " + turnNumber);
+        }
+    }
+
+#region Ratings
+
+    private void RatingPlayer(Card card)
     {
         if ( (expecting == Expecting.Card ||
               selectedCard == null) &&
-              !card.player2Rated)
+              ( !card.player1Rated && turnPhase == TurnPhase.Player1 ||
+                !card.player2Rated && turnPhase == TurnPhase.Player2 ) )
         {
             FocusCard(card);
         }
@@ -141,7 +263,12 @@ public class GameManager : MonoBehaviour
             if (selectedCard == card)
             {
                 card.PutIn(deck: deck, changeOwner: true);
-                card.Player2Rating(ratingToGive);
+
+                if (turnPhase == TurnPhase.Player1)
+                    card.Player1Rating(ratingToGive);
+                else if (turnPhase == TurnPhase.Player2)
+                    card.Player2Rating(ratingToGive);
+
                 NextRating();
             }
             else
@@ -188,35 +315,10 @@ public class GameManager : MonoBehaviour
         }
         else if (ratingToGive == -10)
         {
-            if (phase == Phase.RatingsPlayer1)
-            {
-                Player2RatingPhase();
-            }
-            else if (phase == Phase.RatingsPlayer2)
-            {
-                EndRatingPhase();
-            }
-            else
-                Debug.LogError("We shouldn't end up here!");
+            InitNextTurn();
         }
         else
             Debug.LogError("We shouldn't end up here!");
-    }
-
-    private void Player2RatingPhase()
-    {
-        // Reset deck for player 2
-        phase = Phase.RatingsPlayer2;
-        expecting = Expecting.Card;
-        ratingToGive = 10;
-
-        tableGrid.Reset(deck.GetWholeDeck());
-    }
-
-    private void EndRatingPhase()
-    {
-        ratingToGive = 0;
-        phase = Phase.Player1Turn;
     }
 
 #endregion Ratings

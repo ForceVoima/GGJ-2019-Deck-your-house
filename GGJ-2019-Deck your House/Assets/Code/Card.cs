@@ -152,9 +152,9 @@ public class Card : MonoBehaviour
         glowEffect.SetActive(false);
     }
 
-    private void OnMouseOver()
+    private void OnMouseEnter()
     {
-        if (!selected)
+        if (!selected && Selectable)
             glowEffect.SetActive(true);
     }
 
