@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
 
 public class Card : MonoBehaviour
 {
@@ -10,10 +11,14 @@ public class Card : MonoBehaviour
     [Tooltip("Player 1 joy rating."), Range(-10, 10)]
     public int player1Rating = 0;
 
+    public bool player1Rated = false;
+
     [Tooltip("Player 2 joy rating."), Range(-10, 10)]
     public int player2Rating = 0;
 
-    public string flavorText = "This is very nice card.";
+    public bool player2Rated = false;
+
+    public string cardNameString = "This is the name of the card";
 
     public bool selected = false;
     public bool moving = false;
@@ -22,11 +27,20 @@ public class Card : MonoBehaviour
     private Vector3 startPos;
     private Vector3 endPos;
 
+    private Vector3 previousPos;
+
     private Quaternion startRot;
     private Quaternion endRot;
 
     private float timer = 0f;
     private float timerEnd = 1.0f;
+
+    public TextMeshProUGUI cardName;
+    public TextMeshProUGUI description;
+
+    public TextMeshProUGUI sumValue;
+    public TextMeshProUGUI yourValue;
+    public TextMeshProUGUI theirValue;
 
     [SerializeField]
     private GameObject glowEffect;
@@ -61,11 +75,25 @@ public class Card : MonoBehaviour
     // Use this for initialization
     void Start ()
     {
+        if (cardName == null)
+            cardName = transform.Find("Mesh/Canvas/Name").GetComponent<TextMeshProUGUI>();
+        if (description == null)
+            description = transform.Find("Mesh/Canvas/Description").GetComponent<TextMeshProUGUI>();
+        if (sumValue == null)
+            sumValue = transform.Find("Mesh/Canvas/Value-SUM").GetComponent<TextMeshProUGUI>();
+        if (yourValue == null)
+            yourValue = transform.Find("Mesh/Canvas/Value-yours/Number").GetComponent<TextMeshProUGUI>();
+        if (theirValue == null)
+            theirValue = transform.Find("Mesh/Canvas/Value-theirs/Number").GetComponent<TextMeshProUGUI>();
+
         if (glowEffect == null)
             glowEffect = transform.Find("Glow effect").gameObject;
 
         glowEffect.SetActive(false);
-	}
+
+        yourValue.text = "";
+        theirValue.text = "";
+    }
 	
 	// Update is called once per frame
 	void Update ()
@@ -76,6 +104,24 @@ public class Card : MonoBehaviour
                 moving = false;
         }
 	}
+
+    public void Player1Rating(int value)
+    {
+        player1Rating = value;
+        yourValue.text = player1Rating.ToString();
+
+        player1Rated = true;
+    }
+
+    public void Player2Rating(int value)
+    {
+        player2Rating = value;
+        yourValue.text = player2Rating.ToString();
+
+        player2Rated = true;
+    }
+
+    #region Selections
 
     public void TakeOver(CardStatus status, IHolder holder)
     {
@@ -106,26 +152,35 @@ public class Card : MonoBehaviour
         if (!selected)
             glowEffect.SetActive(false);
     }
+#endregion Selections
 
     public void PutIn(CardSlot slot)
     {
         Deselect();
         InitMove(slot.Position, true);
         status = CardStatus.CardSlot;
-        holder = slot;
+
+        NewHolder(slot);
+    }
+
+    private void NewHolder(IHolder newHolder)
+    {
+        // Let previous holder know!
+        if (holder != null)
+            holder.Exit(this);
+
+        holder = newHolder;
         holder.Enter(this);
 
+        // Switch to new parent
         transform.SetParent(holder.GetTransform());
     }
 
-    #region MoveStuff
-    public void InitMove(Vector3 target, bool faceUpTarget)
+#region MoveStuff
+    public void InitMove(Vector3 target, bool faceUp)
     {
-        // This is totally for testing only:
-        faceUp = !faceUp;
-
-        // Tell the holder you're leaving.
-        holder.Exit(this);
+        previousPos = transform.position;
+        this.faceUp = faceUp;
 
         timer = 0f;
 
@@ -134,7 +189,7 @@ public class Card : MonoBehaviour
 
         endPos = target;
 
-        if (faceUp)
+        if (!this.faceUp)
         {
             endRot = Quaternion.LookRotation(forward: Vector3.down, upwards: Vector3.forward);
         }
@@ -144,6 +199,11 @@ public class Card : MonoBehaviour
         }
 
         moving = true;
+    }
+
+    public void Return(bool faceUp)
+    {
+        InitMove(previousPos, faceUp);
     }
 
     public bool MoveFinished(float deltaTime)

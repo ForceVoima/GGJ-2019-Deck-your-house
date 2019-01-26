@@ -466,12 +466,16 @@ MonoBehaviour:
   baseValue: 10
   player1Rating: 0
   player2Rating: 0
-  flavorText: This is very nice card.
+  cardNameString: This is the name of the card
+  selected: 0
   moving: 0
   faceUp: 1
-  timer: 0
-  timerEnd: 1
-  glowEffect: {fileID: 0}
+  cardName: {fileID: 114589004816207872}
+  description: {fileID: 114169800264362082}
+  sumValue: {fileID: 114703606367187282}
+  yourValue: {fileID: 114664290876182616}
+  theirValue: {fileID: 114395515466580076}
+  glowEffect: {fileID: 1428227688946232}
   status: 4
 --- !u!114 &114205070305726470
 MonoBehaviour:
@@ -632,11 +636,11 @@ MonoBehaviour:
   m_outlineColor:
     serializedVersion: 2
     rgba: 4278190080
-  m_fontSize: 13.6
+  m_fontSize: 24.55
   m_fontSizeBase: 2
   m_fontWeight: 400
   m_enableAutoSizing: 1
-  m_fontSizeMin: 5
+  m_fontSizeMin: 20
   m_fontSizeMax: 72
   m_fontStyle: 1
   m_textAlignment: 258
@@ -987,11 +991,11 @@ MonoBehaviour:
   m_outlineColor:
     serializedVersion: 2
     rgba: 4278190080
-  m_fontSize: 13.6
-  m_fontSizeBase: 2
+  m_fontSize: 24.55
+  m_fontSizeBase: 25.3
   m_fontWeight: 400
   m_enableAutoSizing: 1
-  m_fontSizeMin: 5
+  m_fontSizeMin: 20
   m_fontSizeMax: 72
   m_fontStyle: 1
   m_textAlignment: 258
@@ -1298,7 +1302,7 @@ RectTransform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1455211770964498}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0.00028610218}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 224828776916672340}
@@ -1306,8 +1310,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0}
   m_AnchorMax: {x: 0.5, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 60, y: 20}
+  m_AnchoredPosition: {x: 0, y: 9}
+  m_SizeDelta: {x: 55.22, y: 34.4}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!224 &224258962389653674
 RectTransform:
@@ -1334,7 +1338,7 @@ RectTransform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1311884664750716}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0.00028610218}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 224943523225281078}
@@ -1342,8 +1346,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0}
   m_AnchorMax: {x: 0.5, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 60, y: 20}
+  m_AnchoredPosition: {x: 0, y: 9}
+  m_SizeDelta: {x: 55.22, y: 34.4}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!224 &224797842001721950
 RectTransform:

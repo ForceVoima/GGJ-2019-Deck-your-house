@@ -36,7 +36,7 @@ public class Player : MonoBehaviour
 
             if (clickedItem == ClickedItem.Card)
             {
-
+                GameManager.Instance.CardSelected(selectedCard);
             }
 
             if (clickedItem == ClickedItem.CardSlot)
@@ -47,6 +47,11 @@ public class Player : MonoBehaviour
                     selectedCard.PutIn(clickedCardSlot);
                     selectedCard = null;
                 }
+            }
+
+            if (clickedItem == ClickedItem.None)
+            {
+                GameManager.Instance.NoneSelected();
             }
         }
     }
@@ -92,7 +97,6 @@ public class Player : MonoBehaviour
                 selectedCard.Deselect();
 
             selectedCard = card;
-            selectedCard.Select();
             return true;
         }
         else
