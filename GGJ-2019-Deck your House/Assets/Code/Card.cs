@@ -27,6 +27,25 @@ public class Card : MonoBehaviour
     public float timer = 0f;
     public float timerEnd = 1.0f;
 
+    public enum CardStatus
+    {
+        PlayerHand,
+        CardSlot,
+        Deck,
+        Discard,
+        Testing
+    }
+
+    [SerializeField]
+    private CardStatus status = CardStatus.Testing;
+
+    public CardStatus Status
+    {
+        get { return status; }
+    }
+
+    public IHolder holder;
+
     // Use this for initialization
     void Start ()
     {
@@ -43,10 +62,19 @@ public class Card : MonoBehaviour
         }
 	}
 
+    public void TakeOver(CardStatus status, IHolder holder)
+    {
+        this.status = status;
+        this.holder = holder;
+    }
+
     public void InitMove(Vector3 target, bool faceUpTarget)
     {
         // This is totally for testing only:
         faceUp = !faceUp;
+
+        // Tell the holder you're leaving.
+        holder.Exit(this);
 
         timer = 0f;
 
