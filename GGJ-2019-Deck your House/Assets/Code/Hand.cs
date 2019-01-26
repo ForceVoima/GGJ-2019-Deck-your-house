@@ -4,8 +4,11 @@ using UnityEngine;
 
 public class Hand : MonoBehaviour, IHolder
 {
-	[Range(10f, 180f)]
-	public float angle = 30f;
+	[Range(10f, 180f), Tooltip("Max angle of the whole hand.")]
+	public float maxAngle = 30f;
+
+    [Range(0f, 60f), Tooltip("Card separation between cards when max angle doesn't apply.")]
+    public float cardSeparation = 8f;
 
 	[Range(5f, 30f)]
 	public float radius = 15f;
@@ -16,6 +19,8 @@ public class Hand : MonoBehaviour, IHolder
 	public float cardThickness = 0.05f;
 
 	public List<Card> cards;
+
+    public float[] angles;
 
 	// Use this for initialization
 	void Start ()
@@ -28,14 +33,14 @@ public class Hand : MonoBehaviour, IHolder
 		{
 			cards.Add(card);
 			card.TakeOver(Card.CardStatus.PlayerHand, this);
-		}
-	}
+        }
+    }
 	
 	// Update is called once per frame
 	void Update ()
-	{
-		UpdateCardPositions();
-	}
+    {
+        UpdateCardPositions();
+    }
 
 	private void UpdateCardPositions()
 	{
@@ -43,7 +48,7 @@ public class Hand : MonoBehaviour, IHolder
 		Vector3 forward = transform.forward;	// Blue arrow
 		Vector3 right = transform.right;		// Red arrow
 
-		float minAngle = -angle / 2f;
+		float minAngle = -maxAngle / 2f;
 		float currentAngle = 0f;
 		float halfAngle = 0f;
 		int total = cards.Count - 1;
@@ -52,13 +57,19 @@ public class Hand : MonoBehaviour, IHolder
 		Vector3 halfAngleVector = new Vector3();
 		Quaternion currentRot = new Quaternion();
 
+        angles = new float[cards.Count];
+
+        // No cards left
 		if (cards.Count <= 0)
 		{
 			return;
 		}
 
-		if (cards.Count <= 1)
+        // One card left
+		if (cards.Count == 1)
 		{
+            angles[0] = 0f;
+
 			currentPos = radius * forward;
 
 			halfAngleVector = radius * forward;
@@ -73,10 +84,25 @@ public class Hand : MonoBehaviour, IHolder
 			return;
 		}
 
-		for (int i = 0; i <= total; i++)
+        bool minGap = maxAngle > cardSeparation * (1f * total);
+
+        // minGap = false;
+
+        if (minGap)
+            minAngle = -(total) * cardSeparation / 2f;
+
+        for (int i = 0; i <= total; i++)
 		{
-			currentAngle = minAngle + angle / (1f * total) * (1f * i);
-			currentAngle *= Mathf.Deg2Rad;
+            if (minGap)
+            {
+                currentAngle = minAngle + cardSeparation * (1f * i);
+            }
+            else
+            {
+                currentAngle = minAngle + maxAngle / (1f * total) * (1f * i);
+            }
+            angles[i] = currentAngle;
+            currentAngle *= Mathf.Deg2Rad;
 
 			halfAngle = currentAngle * cardAnglingFactor;
 
