@@ -25,8 +25,8 @@ public class Card : MonoBehaviour
     private Quaternion startRot;
     private Quaternion endRot;
 
-    public float timer = 0f;
-    public float timerEnd = 1.0f;
+    private float timer = 0f;
+    private float timerEnd = 1.0f;
 
     [SerializeField]
     private GameObject glowEffect;
@@ -114,6 +114,8 @@ public class Card : MonoBehaviour
         status = CardStatus.CardSlot;
         holder = slot;
         holder.Enter(this);
+
+        transform.SetParent(holder.GetTransform());
     }
 
     #region MoveStuff

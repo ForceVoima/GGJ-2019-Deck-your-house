@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Hand : MonoBehaviour, IHolder
+public class Hand : CardHolder, IHolder
 {
 	[Range(10f, 180f), Tooltip("Max angle of the whole hand.")]
 	public float maxAngle = 30f;
@@ -18,23 +18,7 @@ public class Hand : MonoBehaviour, IHolder
 
 	public float cardThickness = 0.05f;
 
-	public List<Card> cards;
-
     public float[] angles;
-
-	// Use this for initialization
-	void Start ()
-	{
-		cards = new List<Card>();
-
-		Card[] cardsArray = GetComponentsInChildren<Card>();
-
-		foreach (Card card in cardsArray)
-		{
-			cards.Add(card);
-			card.TakeOver(Card.CardStatus.PlayerHand, this);
-        }
-    }
 	
 	// Update is called once per frame
 	void Update ()
@@ -120,15 +104,5 @@ public class Hand : MonoBehaviour, IHolder
 			cards[i].transform.position = currentPos;
 			cards[i].transform.rotation = currentRot;
 		}
-	}
-
-	public void Enter(Card card)
-	{
-		cards.Add(card);
-	}
-
-	public void Exit(Card card)
-	{
-		cards.Remove(card);
 	}
 }

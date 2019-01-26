@@ -27,4 +27,9 @@ public class CardSlot : MonoBehaviour, IHolder
         filled = false;
         currentCard = null;
     }
+
+    public Transform GetTransform()
+    {
+        return transform;
+    }
 }
