@@ -28,6 +28,7 @@ public class Hand : CardHolder, IHolder
     public override void Exit(Card card)
     {
         cards.Remove(card);
+        UpdateCardPositions();
     }
 
     public void Organize()
