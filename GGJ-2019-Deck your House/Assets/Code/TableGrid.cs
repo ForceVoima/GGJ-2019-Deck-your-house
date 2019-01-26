@@ -10,12 +10,18 @@ public class TableGrid : CardHolder, IHolder
     public float horizontalSpacing = 5f;
     public float verticalSpacing = 7f;
 
-    // Use this for initialization
-    public override void Start()
+    public void Reset(Card[] deck)
     {
-        base.Start();
+        if (!initialized)
+            Initialize();
 
-        SetupLayout();
+        for (int i = deck.Length - 1; i >= 0; i--)
+        {
+            deck[i].ResetRatingTexts();
+            deck[i].PutIn(this);
+        }
+
+        StartCoroutine( DealGrid() );
     }
 
     private void SetupLayout()
@@ -38,5 +44,32 @@ public class TableGrid : CardHolder, IHolder
 
             position.z += verticalSpacing;
         }
+    }
+
+    IEnumerator DealGrid()
+    {
+        float yPos = -(height - 1) * verticalSpacing / 2f;
+        Vector3 position = new Vector3(0f, 0f, yPos);
+        int cardNumber = 0;
+
+        for (int y = 1; y <= height; y++)
+        {
+            position.x = -(width - 1) * horizontalSpacing / 2f;
+
+            for (int x = 1; x <= width; x++)
+            {
+                // cards[cardNumber].transform.position = position;
+                cards[cardNumber].InitMove(position, true);
+
+                position.x += horizontalSpacing;
+                cardNumber++;
+
+                yield return new WaitForSeconds(0.1f);
+            }
+
+            position.z += verticalSpacing;
+        }
+
+        yield return null;
     }
 }

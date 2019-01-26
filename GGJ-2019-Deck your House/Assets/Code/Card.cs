@@ -24,6 +24,8 @@ public class Card : MonoBehaviour
     public bool moving = false;
     public bool faceUp = true;
 
+    public bool debug = false;
+
     private Vector3 startPos;
     private Vector3 endPos;
 
@@ -51,6 +53,7 @@ public class Card : MonoBehaviour
         CardSlot,
         Deck,
         Discard,
+        Grid,
         Testing
     }
 
@@ -66,7 +69,9 @@ public class Card : MonoBehaviour
     {
         get
         {
-            return (status == CardStatus.PlayerHand || status == CardStatus.Testing);
+            return (status == CardStatus.PlayerHand ||
+                    status == CardStatus.Testing ||
+                    status == CardStatus.Grid);
         }
     }
 
@@ -121,6 +126,12 @@ public class Card : MonoBehaviour
         player2Rated = true;
     }
 
+    public void ResetRatingTexts()
+    {
+        yourValue.text = "";
+        theirValue.text = "";
+    }
+
     #region Selections
 
     public void TakeOver(CardStatus status, IHolder holder)
@@ -154,6 +165,24 @@ public class Card : MonoBehaviour
     }
 #endregion Selections
 
+    public void PutIn(TableGrid grid)
+    {
+        Deselect();
+        status = CardStatus.Grid;
+
+        NewHolder(grid);
+    }
+
+    public void PutIn(Deck deck, bool changeOwner)
+    {
+        Deselect();
+        InitMove(deck.Position, deck.Rotation);
+        status = CardStatus.Deck;
+
+        if (changeOwner)
+            NewHolder(deck);
+    }
+
     public void PutIn(CardSlot slot)
     {
         Deselect();
@@ -161,6 +190,11 @@ public class Card : MonoBehaviour
         status = CardStatus.CardSlot;
 
         NewHolder(slot);
+    }
+
+    public void InitializeHolder(IHolder holder)
+    {
+        this.holder = holder;
     }
 
     private void NewHolder(IHolder newHolder)
@@ -179,15 +213,32 @@ public class Card : MonoBehaviour
 #region MoveStuff
     public void InitMove(Vector3 target, bool faceUp)
     {
-        previousPos = transform.position;
-        this.faceUp = faceUp;
+        BasicMove(target);
+        FaceUp(faceUp);
+    }
 
+    public void InitMove(Vector3 moveTarget, Quaternion rotTarget)
+    {
+        BasicMove(moveTarget);
+        endRot = rotTarget;
+    }
+
+    private void BasicMove(Vector3 target)
+    {
+        previousPos = transform.position;
         timer = 0f;
 
         startPos = transform.position;
         startRot = transform.rotation;
 
         endPos = target;
+
+        moving = true;
+    }
+
+    private void FaceUp(bool faceUp)
+    {
+        this.faceUp = faceUp;
 
         if (!this.faceUp)
         {
@@ -197,8 +248,6 @@ public class Card : MonoBehaviour
         {
             endRot = Quaternion.LookRotation(forward: Vector3.up, upwards: Vector3.forward);
         }
-
-        moving = true;
     }
 
     public void Return(bool faceUp)

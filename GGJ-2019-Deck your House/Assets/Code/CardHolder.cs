@@ -5,8 +5,15 @@ using System.Collections.Generic;
 public class CardHolder : MonoBehaviour, IHolder
 {
     public List<Card> cards;
+    protected bool initialized = false;
 
-    public virtual void Start()
+    public void Start()
+    {
+        if (!initialized)
+            Initialize();
+    }
+
+    public void Initialize()
     {
         cards = new List<Card>();
 
@@ -17,6 +24,8 @@ public class CardHolder : MonoBehaviour, IHolder
             cards.Add(card);
             card.TakeOver(Card.CardStatus.PlayerHand, this);
         }
+
+        initialized = true;
     }
 
     public virtual void Enter(Card card)

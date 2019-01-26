@@ -57,10 +57,21 @@ public class GameManager : MonoBehaviour
     public Card selectedCard = null;
     public Transform focalPoint;
 
+    public TableGrid tableGrid;
+    public Deck deck;
+
     public void Start()
     {
         if (focalPoint == null)
             focalPoint = transform.Find("Focal point").transform;
+
+        phase = Phase.RatingsPlayer1;
+        expecting = Expecting.Card;
+
+        deck.Initialize();
+        deck.Organize();
+
+        tableGrid.Reset( deck.GetWholeDeck() );
     }
 
     public void CardSelected(Card card)
@@ -72,8 +83,7 @@ public class GameManager : MonoBehaviour
         {
             RatingPlayer1(card);
         }
-
-        if (phase == Phase.RatingsPlayer2)
+        else if (phase == Phase.RatingsPlayer2)
         {
             RatingPlayer2(card);
         }
@@ -106,7 +116,7 @@ public class GameManager : MonoBehaviour
         {
             if (selectedCard == card)
             {
-                DeFocusCard(card);
+                card.PutIn(deck: deck, changeOwner: true);
                 card.Player1Rating(ratingToGive);
                 NextRating();
             }
@@ -130,7 +140,7 @@ public class GameManager : MonoBehaviour
         {
             if (selectedCard == card)
             {
-                DeFocusCard(card);
+                card.PutIn(deck: deck, changeOwner: true);
                 card.Player2Rating(ratingToGive);
                 NextRating();
             }
@@ -180,21 +190,33 @@ public class GameManager : MonoBehaviour
         {
             if (phase == Phase.RatingsPlayer1)
             {
-                // Reset deck for player 2
-                phase = Phase.RatingsPlayer2;
-                expecting = Expecting.Card;
-                ratingToGive = 10;
+                Player2RatingPhase();
             }
             else if (phase == Phase.RatingsPlayer2)
             {
-                ratingToGive = 0;
-                phase = Phase.Player1Turn;
+                EndRatingPhase();
             }
             else
                 Debug.LogError("We shouldn't end up here!");
         }
         else
             Debug.LogError("We shouldn't end up here!");
+    }
+
+    private void Player2RatingPhase()
+    {
+        // Reset deck for player 2
+        phase = Phase.RatingsPlayer2;
+        expecting = Expecting.Card;
+        ratingToGive = 10;
+
+        tableGrid.Reset(deck.GetWholeDeck());
+    }
+
+    private void EndRatingPhase()
+    {
+        ratingToGive = 0;
+        phase = Phase.Player1Turn;
     }
 
 #endregion Ratings
