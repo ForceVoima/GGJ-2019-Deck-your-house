@@ -15,6 +15,7 @@ public class Card : MonoBehaviour
 
     public string flavorText = "This is very nice card.";
 
+    public bool selected = false;
     public bool moving = false;
     public bool faceUp = true;
 
@@ -26,6 +27,9 @@ public class Card : MonoBehaviour
 
     public float timer = 0f;
     public float timerEnd = 1.0f;
+
+    [SerializeField]
+    private GameObject glowEffect;
 
     public enum CardStatus
     {
@@ -44,12 +48,23 @@ public class Card : MonoBehaviour
         get { return status; }
     }
 
+    public bool Selectable
+    {
+        get
+        {
+            return (status == CardStatus.PlayerHand || status == CardStatus.Testing);
+        }
+    }
+
     public IHolder holder;
 
     // Use this for initialization
     void Start ()
     {
-		
+        if (glowEffect == null)
+            glowEffect = transform.Find("Glow effect").gameObject;
+
+        glowEffect.SetActive(false);
 	}
 	
 	// Update is called once per frame
@@ -68,6 +83,40 @@ public class Card : MonoBehaviour
         this.holder = holder;
     }
 
+    public void Select()
+    {
+        selected = true;
+        glowEffect.SetActive(true);
+    }
+
+    public void Deselect()
+    {
+        selected = false;
+        glowEffect.SetActive(false);
+    }
+
+    private void OnMouseOver()
+    {
+        if (!selected)
+            glowEffect.SetActive(true);
+    }
+
+    private void OnMouseExit()
+    {
+        if (!selected)
+            glowEffect.SetActive(false);
+    }
+
+    public void PutIn(CardSlot slot)
+    {
+        Deselect();
+        InitMove(slot.Position, true);
+        status = CardStatus.CardSlot;
+        holder = slot;
+        holder.Enter(this);
+    }
+
+    #region MoveStuff
     public void InitMove(Vector3 target, bool faceUpTarget)
     {
         // This is totally for testing only:
@@ -123,4 +172,5 @@ public class Card : MonoBehaviour
     {
         return t * t * t * (t * (6f * t - 15f) + 10f);
     }
+#endregion MoveStuff
 }

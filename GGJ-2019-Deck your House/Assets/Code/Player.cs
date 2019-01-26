@@ -4,9 +4,22 @@ using System.Collections;
 public class Player : MonoBehaviour
 {
     public Camera sceneCamera;
-    public Card clickedCard;
+
+    public enum ClickedItem
+    {
+        Card,
+        CardSlot,
+        DiscardPile,
+        None
+    }
+
+    public ClickedItem clickedItem;
+
+    public Card selectedCard;
+    public CardSlot clickedCardSlot;
+
     public Vector3 clickedPos;
-    
+
     void Start()
     {
         if (sceneCamera == null)
@@ -19,21 +32,26 @@ public class Player : MonoBehaviour
     {
         if (Input.GetMouseButtonDown(button: 0))
         {
-            if ( WasCardClicked() )
+            clickedItem = WhatWasClicked();
+
+            if (clickedItem == ClickedItem.Card)
             {
-                Debug.Log(Time.fixedTime +  " Card: " + clickedCard.name + " was clicked!");
+
             }
-            else
+
+            if (clickedItem == ClickedItem.CardSlot)
             {
-                if (clickedCard != null)
+                if (clickedCardSlot.Free &&
+                    selectedCard != null)
                 {
-                    clickedCard.InitMove(clickedPos, true);
+                    selectedCard.PutIn(clickedCardSlot);
+                    selectedCard = null;
                 }
             }
         }
     }
 
-    private bool WasCardClicked()
+    private ClickedItem WhatWasClicked()
     {
         RaycastHit hit;
         Ray ray = sceneCamera.ScreenPointToRay(Input.mousePosition);
@@ -42,21 +60,53 @@ public class Player : MonoBehaviour
         {
             Transform objectHit = hit.transform;
 
-            Card card = objectHit.GetComponentInParent<Card>();
+            int layer = objectHit.gameObject.layer;
 
-            if (card != null)
+            if (layer == 8)
             {
-                clickedCard = card;
-                return true;
+                if (CardClicked(objectHit) )
+                    return ClickedItem.Card;
+                else
+                    return ClickedItem.None;
             }
-            else
-            {
-                Vector3 point = hit.point;
-                point.y = 0f;
-                clickedPos = point;
 
-                return false;
+            if (layer == 9)
+            {
+                if (CardSlotClicked(objectHit))
+                    return ClickedItem.CardSlot;
+                else
+                    return ClickedItem.None;
             }
+        }
+
+        return ClickedItem.None;
+    }
+
+    private bool CardClicked(Transform objectHit)
+    {
+        Card card = objectHit.GetComponentInParent<Card>();
+
+        if (card != null && card.Selectable)
+        {
+            if (selectedCard != null)
+                selectedCard.Deselect();
+
+            selectedCard = card;
+            selectedCard.Select();
+            return true;
+        }
+        else
+            return false;
+    }
+
+    private bool CardSlotClicked(Transform objectHit)
+    {
+        CardSlot slot = objectHit.GetComponentInParent<CardSlot>();
+
+        if (slot != null)
+        {
+            clickedCardSlot = slot;
+            return true;
         }
         else
             return false;
