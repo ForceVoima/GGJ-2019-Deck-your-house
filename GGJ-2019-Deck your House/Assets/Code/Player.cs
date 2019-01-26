@@ -17,6 +17,7 @@ public class Player : MonoBehaviour
 
     public Card selectedCard;
     public CardSlot clickedCardSlot;
+    public Discard clickedDiscardPile;
 
     public Vector3 clickedPos;
 
@@ -39,17 +40,17 @@ public class Player : MonoBehaviour
                 GameManager.Instance.CardSelected(selectedCard);
             }
 
-            if (clickedItem == ClickedItem.CardSlot)
+            else if (clickedItem == ClickedItem.CardSlot)
             {
-                if (clickedCardSlot.Free &&
-                    selectedCard != null)
-                {
-                    selectedCard.PutIn(clickedCardSlot);
-                    selectedCard = null;
-                }
+                GameManager.Instance.CardSlotSelected(clickedCardSlot);
             }
 
-            if (clickedItem == ClickedItem.None)
+            else if (clickedItem == ClickedItem.DiscardPile)
+            {
+                GameManager.Instance.DiscardPileSelected(clickedDiscardPile);
+            }
+
+            else if (clickedItem == ClickedItem.None)
             {
                 GameManager.Instance.NoneSelected();
             }
@@ -69,16 +70,24 @@ public class Player : MonoBehaviour
 
             if (layer == 8)
             {
-                if (CardClicked(objectHit) )
+                if ( CardClicked(objectHit) )
                     return ClickedItem.Card;
                 else
                     return ClickedItem.None;
             }
 
-            if (layer == 9)
+            else if (layer == 9)
             {
-                if (CardSlotClicked(objectHit))
+                if ( CardSlotClicked(objectHit) )
                     return ClickedItem.CardSlot;
+                else
+                    return ClickedItem.None;
+            }
+
+            else if (layer == 10)
+            {
+                if ( DiscardPileClicked(objectHit) )
+                    return ClickedItem.DiscardPile;
                 else
                     return ClickedItem.None;
             }
@@ -110,6 +119,19 @@ public class Player : MonoBehaviour
         if (slot != null)
         {
             clickedCardSlot = slot;
+            return true;
+        }
+        else
+            return false;
+    }
+
+    private bool DiscardPileClicked(Transform objectHit)
+    {
+        Discard discard = objectHit.GetComponentInParent<Discard>();
+
+        if (discard != null)
+        {
+            clickedDiscardPile = discard;
             return true;
         }
         else

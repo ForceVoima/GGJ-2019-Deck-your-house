@@ -1,11 +1,11 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class Deck : CardHolder
+public class Discard : CardHolder
 {
     public float cardThickness = 0.05f;
-    public int cardsToDeal = 0;
 
+    public int cardsToDeal = 0;
     public Hand dealToHand;
 
     public void Organize()
@@ -21,35 +21,6 @@ public class Deck : CardHolder
         }
 
         cards.Reverse();
-    }
-
-    public void Shuffle()
-    {
-        // Fancy Fisher-Yates shuffle:
-        Card[] array = cards.ToArray();
-        Card temp;
-        int j;
-
-        for (int i = 0; i < array.Length; i++)
-        {
-            j = Random.Range(0, array.Length - 1);
-
-            temp = array[j];
-            array[j] = array[i];
-            array[i] = temp;
-        }
-
-        cards.Clear();
-
-        for (int i = 0; i < array.Length; i++)
-        {
-            cards.Add(array[i]);
-        }
-    }
-
-    public Card[] GetWholeDeck()
-    {
-        return cards.ToArray();
     }
 
     public Vector3 Position

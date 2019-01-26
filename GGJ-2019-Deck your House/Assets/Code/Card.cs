@@ -47,12 +47,14 @@ public class Card : MonoBehaviour
     [SerializeField]
     private GameObject glowEffect;
 
+    public Collider cardCollider;
+
     public enum CardStatus
     {
         PlayerHand,
         CardSlot,
         Deck,
-        Discard,
+        DiscardPile,
         Grid,
         Testing
     }
@@ -90,6 +92,9 @@ public class Card : MonoBehaviour
             yourValue = transform.Find("Mesh/Canvas/Value-yours/Number").GetComponent<TextMeshProUGUI>();
         if (theirValue == null)
             theirValue = transform.Find("Mesh/Canvas/Value-theirs/Number").GetComponent<TextMeshProUGUI>();
+
+        if (cardCollider == null)
+            cardCollider = GetComponentInChildren<Collider>();
 
         if (glowEffect == null)
             glowEffect = transform.Find("Glow effect").gameObject;
@@ -176,7 +181,7 @@ public class Card : MonoBehaviour
     public void PutIn(Deck deck, bool changeOwner)
     {
         Deselect();
-        InitMove(deck.Position, deck.Rotation);
+        InitMove(deck.Position, deck.Rotation, 0.8f);
         status = CardStatus.Deck;
 
         if (changeOwner)
@@ -188,8 +193,24 @@ public class Card : MonoBehaviour
         Deselect();
         InitMove(slot.Position, true);
         status = CardStatus.CardSlot;
-
         NewHolder(slot);
+    }
+
+    public void PutIn(Hand hand)
+    {
+        Deselect();
+        InitMove(hand.transform.position, false);
+        status = CardStatus.PlayerHand;
+        NewHolder(hand);
+    }
+
+    public void PutIn(Discard discard)
+    {
+        Deselect();
+        InitMove(discard.Position, discard.Rotation, 0.8f);
+        status = CardStatus.DiscardPile;
+        NewHolder(discard);
+        cardCollider.enabled = false;
     }
 
     public void InitializeHolder(IHolder holder)
@@ -211,14 +232,27 @@ public class Card : MonoBehaviour
     }
 
 #region MoveStuff
+
     public void InitMove(Vector3 target, bool faceUp)
+    {
+        InitMove(target, faceUp, 1.0f);
+    }
+
+    public void InitMove(Vector3 target, bool faceUp, float time)
     {
         BasicMove(target);
         FaceUp(faceUp);
+        timerEnd = time;
     }
 
     public void InitMove(Vector3 moveTarget, Quaternion rotTarget)
     {
+        InitMove(moveTarget, rotTarget, 1.0f);
+    }
+
+    public void InitMove(Vector3 moveTarget, Quaternion rotTarget, float time)
+    {
+        timerEnd = time;
         BasicMove(moveTarget);
         endRot = rotTarget;
     }

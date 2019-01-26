@@ -36,8 +36,8 @@ public class GameManager : MonoBehaviour
         Card,
         RatingConfirmation,
         CardSlot,
-        CardSlotOrDiscard,
-        Discard,
+        CardSlotOrDiscardPile,
+        DiscardPile,
         Continue
     }
 
@@ -75,19 +75,35 @@ public class GameManager : MonoBehaviour
     [Range(0, 5)]
     public int turnNumber = 0;
 
+    public Card[] cardArray;
+
+    public bool playedCard = false;
+    public bool playerDiscard = false;
+
+    public int player1commonRoomCards = 0;
+    public int player2commonRoomCards = 0;
+
     public void Start()
     {
         if (focalPoint == null)
             focalPoint = transform.Find("Focal point").transform;
 
+        /*
         phase = Phase.RatingsPlayer;
         expecting = Expecting.Card;
 
         deck.Initialize();
+        deck.Shuffle();
+        deck.Organize();
 
         UI.Instance.ShowUI(true);
         UI.Instance.UpdateText("Player 1. Rate the your cards from 10 to -10:", "Continue");
         turnNumber = 0;
+        */
+
+        phase = Phase.RatingsPlayer;
+        turnPhase = TurnPhase.Player2;
+        InitNextTurn();
     }
 
     public void CardSelected(Card card)
@@ -103,6 +119,14 @@ public class GameManager : MonoBehaviour
                 RatingPlayer(card);
             }
         }
+        else if (phase == Phase.NormalTurns)
+        {
+            if (turnPhase == TurnPhase.Player1 ||
+                turnPhase == TurnPhase.Player2)
+            {
+                NormalTurnCardSelected(card);
+            }
+        }
     }
 
     public void NoneSelected()
@@ -115,17 +139,91 @@ public class GameManager : MonoBehaviour
                 DeFocusCard(selectedCard);
             }
         }
+
+        else if (phase == Phase.NormalTurns)
+        {
+            if ( (expecting == Expecting.CardSlot ||
+                  expecting == Expecting.DiscardPile ||
+                  expecting == Expecting.CardSlotOrDiscardPile) &&
+                 selectedCard != null )
+            {
+                selectedCard.Deselect();
+                selectedCard = null;
+
+                expecting = Expecting.Card;
+            }
+        }
+    }
+
+    public void CardSlotSelected(CardSlot slot)
+    {
+        bool turnOK = (turnPhase == TurnPhase.Player1 ||
+                       turnPhase == TurnPhase.Player2);
+
+        bool expectingOK = (expecting == Expecting.CardSlot ||
+                            expecting == Expecting.CardSlotOrDiscardPile);
+
+        if ( phase == Phase.NormalTurns &&
+             turnOK &&
+             expectingOK &&
+             slot.Free &&
+             selectedCard != null &&
+             !playedCard )
+        {
+            selectedCard.PutIn(slot);
+            selectedCard = null;
+
+            if (!playedCard && !playerDiscard)
+            {
+                playedCard = true;
+                expecting = Expecting.Card;
+            }
+            else if (!playedCard && playerDiscard)
+            {
+                playedCard = true;
+                InitNextTurn();
+            }
+        }
+    }
+
+    public void DiscardPileSelected(Discard discard)
+    {
+        bool turnOK = (turnPhase == TurnPhase.Player1 ||
+                       turnPhase == TurnPhase.Player2);
+
+        bool expectingOK = (expecting == Expecting.DiscardPile ||
+                            expecting == Expecting.CardSlotOrDiscardPile);
+
+        if (phase == Phase.NormalTurns &&
+             turnOK &&
+             expectingOK &&
+             selectedCard != null)
+        {
+            selectedCard.PutIn(discard);
+            selectedCard = null;
+
+            if (!playedCard && !playerDiscard)
+            {
+                playerDiscard = true;
+                expecting = Expecting.Card;
+            }
+
+            else if (playedCard && !playerDiscard)
+            {
+                playerDiscard = true;
+                InitNextTurn();
+            }
+
+            else if (!playedCard && playerDiscard)
+            {
+                Debug.Log("Select from Discard pile!");
+            }
+        }
     }
 
     public void ContinueSelected()
     {
-        if (turnPhase == TurnPhase.Wait1 ||
-            turnPhase == TurnPhase.Wait2)
-        {
-            InitNextTurn();
-        }
-        else
-            Debug.Log("How did someone press continue here?");
+        InitNextTurn();
     }
 
     private void InitNextTurn()
@@ -150,8 +248,8 @@ public class GameManager : MonoBehaviour
             ratingToGive = 10;
             UI.Instance.ShowUI(false);
 
-            deck.Organize();
-            tableGrid.Reset(deck.GetWholeDeck());
+            cardArray = deck.GetWholeDeck();
+            tableGrid.Reset(cardArray);
         }
         else if (turnPhase == TurnPhase.Player1)
         {
@@ -168,8 +266,11 @@ public class GameManager : MonoBehaviour
             ratingToGive = 10;
             UI.Instance.ShowUI(false);
 
+            deck.Shuffle();
             deck.Organize();
-            tableGrid.Reset(deck.GetWholeDeck());
+
+            cardArray = deck.GetWholeDeck();
+            tableGrid.Reset(cardArray);
         }
         else if (turnPhase == TurnPhase.Player2)
         {
@@ -195,14 +296,18 @@ public class GameManager : MonoBehaviour
 
             if (turnNumber == 1)
             {
-                // deck.Organize();
-                // player1Hand.Deal6(deck.Deal6());
+                deck.Shuffle();
+                deck.Organize();
+                deck.DealCards(6, player1Hand);
             }
             else if (turnNumber >= 2 &&
                      turnNumber <= 3)
             {
-                // Deal 2 cards!
+                deck.DealCards(2, player1Hand);
             }
+
+            playedCard = false;
+            playerDiscard = false;
         }
         else if (turnPhase == TurnPhase.Player1)
         {
@@ -221,12 +326,12 @@ public class GameManager : MonoBehaviour
 
             if (turnNumber == 1)
             {
-                // player1Hand.Deal6(deck.Deal6());
+                deck.DealCards(6, player2Hand);
             }
             else if (turnNumber >= 2 &&
                      turnNumber <= 3)
             {
-                // Deal 2 cards!
+                deck.DealCards(2, player2Hand);
             }
         }
         else if (turnPhase == TurnPhase.Player2)
@@ -281,7 +386,7 @@ public class GameManager : MonoBehaviour
 
     private void FocusCard(Card card)
     {
-        card.InitMove(focalPoint.position, true);
+        card.InitMove(focalPoint.position, true, 0.4f);
         card.Select();
         selectedCard = card;
         expecting = Expecting.RatingConfirmation;
@@ -321,5 +426,45 @@ public class GameManager : MonoBehaviour
             Debug.LogError("We shouldn't end up here!");
     }
 
+    public void PickRandomRatings()
+    {
+        StartCoroutine(PickRandomRatingsRoutine());
+    }
+
+    IEnumerator PickRandomRatingsRoutine()
+    {
+        yield return new WaitForSeconds(0.2f);
+        
+        for (int i = 0; i < cardArray.Length; i++)
+        {
+            RatingPlayer(cardArray[i]);
+            yield return new WaitForSeconds(0.1f);
+            RatingPlayer(cardArray[i]);
+            yield return new WaitForSeconds(0.1f);
+        }
+
+        yield return null;
+    }
+
 #endregion Ratings
+
+#region NormalTurn
+    private void NormalTurnCardSelected(Card card)
+    {
+        if (expecting == Expecting.Card)
+        {
+            card.Select();
+            selectedCard = card;
+
+            if (!playedCard && !playerDiscard)
+                expecting = Expecting.CardSlotOrDiscardPile;
+
+            else if (playedCard && !playerDiscard)
+                expecting = Expecting.DiscardPile;
+
+            else if (!playedCard && playerDiscard)
+                expecting = Expecting.CardSlot;
+        }
+    }
+#endregion NormalTurn
 }

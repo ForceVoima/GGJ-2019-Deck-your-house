@@ -19,14 +19,24 @@ public class Hand : CardHolder, IHolder
 	public float cardThickness = 0.05f;
 
     public float[] angles;
-	
-	// Update is called once per frame
-	void Update ()
+
+    public override void Enter(Card card)
+    {
+        cards.Add(card);
+    }
+
+    public override void Exit(Card card)
+    {
+        cards.Remove(card);
+        UpdateCardPositions();
+    }
+
+    public void Organize()
     {
         UpdateCardPositions();
     }
 
-	private void UpdateCardPositions()
+    private void UpdateCardPositions()
 	{
 		Vector3 up = transform.up;				// Green arrow
 		Vector3 forward = transform.forward;	// Blue arrow
@@ -62,10 +72,13 @@ public class Hand : CardHolder, IHolder
 			currentPos += transform.position;
 			currentPos -= radius * forward;
 
+            /*
 			cards[0].transform.position = currentPos;
 			cards[0].transform.rotation = currentRot;
+            */
+            cards[0].InitMove(currentPos, currentRot);
 
-			return;
+            return;
 		}
 
         bool minGap = maxAngle > cardSeparation * (1f * total);
@@ -101,8 +114,11 @@ public class Hand : CardHolder, IHolder
 			currentPos += transform.position;
 			currentPos -= radius * forward;
 
+            /*
 			cards[i].transform.position = currentPos;
 			cards[i].transform.rotation = currentRot;
+            */
+            cards[i].InitMove(currentPos, currentRot, 0.5f);
 		}
 	}
 }
