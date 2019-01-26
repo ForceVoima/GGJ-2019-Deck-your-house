@@ -79,6 +79,7 @@ public class GameManager : MonoBehaviour
 
     public bool playedCard = false;
     public bool playerDiscard = false;
+    public bool doubleDiscard = false;
 
     public int player1commonRoomCards = 0;
     public int player2commonRoomCards = 0;
@@ -217,6 +218,9 @@ public class GameManager : MonoBehaviour
             else if (!playedCard && playerDiscard)
             {
                 Debug.Log("Select from Discard pile!");
+
+                doubleDiscard = true;
+                expecting = Expecting.Card;
             }
         }
     }
@@ -301,13 +305,14 @@ public class GameManager : MonoBehaviour
                 deck.DealCards(6, player1Hand);
             }
             else if (turnNumber >= 2 &&
-                     turnNumber <= 3)
+                     turnNumber <= 5)
             {
-                deck.DealCards(2, player1Hand);
+                deck.DealCards(1, player1Hand);
             }
 
             playedCard = false;
             playerDiscard = false;
+            doubleDiscard = false;
         }
         else if (turnPhase == TurnPhase.Player1)
         {
@@ -321,7 +326,11 @@ public class GameManager : MonoBehaviour
         {
             turnPhase = TurnPhase.Player2;
             expecting = Expecting.Card;
-            ratingToGive = 10;
+
+            playedCard = false;
+            playerDiscard = false;
+            doubleDiscard = false;
+
             UI.Instance.ShowUI(false);
 
             if (turnNumber == 1)
@@ -329,9 +338,9 @@ public class GameManager : MonoBehaviour
                 deck.DealCards(6, player2Hand);
             }
             else if (turnNumber >= 2 &&
-                     turnNumber <= 3)
+                     turnNumber <= 5)
             {
-                deck.DealCards(2, player2Hand);
+                deck.DealCards(1, player2Hand);
             }
         }
         else if (turnPhase == TurnPhase.Player2)
@@ -339,6 +348,7 @@ public class GameManager : MonoBehaviour
             if (turnNumber == 5)
             {
                 phase = Phase.EndScreen;
+                CountScores();
                 return;
             }
 
@@ -456,15 +466,23 @@ public class GameManager : MonoBehaviour
             card.Select();
             selectedCard = card;
 
-            if (!playedCard && !playerDiscard)
+            if (!playedCard && doubleDiscard)
+                expecting = Expecting.CardSlot;
+
+            else if (!playedCard && !playerDiscard)
                 expecting = Expecting.CardSlotOrDiscardPile;
 
             else if (playedCard && !playerDiscard)
                 expecting = Expecting.DiscardPile;
 
             else if (!playedCard && playerDiscard)
-                expecting = Expecting.CardSlot;
+                expecting = Expecting.CardSlotOrDiscardPile;
         }
     }
 #endregion NormalTurn
+
+    private void CountScores()
+    {
+
+    }
 }

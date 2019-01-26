@@ -32,6 +32,8 @@ public class UI : MonoBehaviour
     [SerializeField]
     private TextMeshProUGUI instructions;
     [SerializeField]
+    private TextMeshProUGUI guide;
+    [SerializeField]
     private TextMeshProUGUI buttonText;
 
     [SerializeField]
@@ -41,6 +43,12 @@ public class UI : MonoBehaviour
     {
         this.instructions.text = instructions;
         this.buttonText.text = buttonText;
+    }
+
+    public void UpdateGuide(string guideText)
+    {
+        guide.gameObject.SetActive(true);
+        guide.text = guideText;
     }
 
     public void ShowUI(bool value)
