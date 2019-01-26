@@ -14,7 +14,17 @@ public class CardSlot : MonoBehaviour, IHolder
         get { return transform.position; }
     }
 
-    // Room parent;
+    private Room parent;
+
+    public Room ParentRoom
+    {
+        get { return parent; }
+    }
+
+    public void SetParentRoom(Room room)
+    {
+        parent = room;
+    }
 
     public void Enter(Card card)
     {

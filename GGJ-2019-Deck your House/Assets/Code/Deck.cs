@@ -8,6 +8,49 @@ public class Deck : CardHolder
 
     public Hand dealToHand;
 
+    public bool spawnDeck = false;
+
+    public override void Initialize()
+    {
+        base.Initialize();
+
+        if (spawnDeck)
+            SpawnDeck();
+    }
+
+    private void SpawnDeck()
+    {
+        GameObject[] cardPool = Resources.LoadAll<GameObject>("Cards");
+        Card temp;
+
+        int index = 0;
+        int spawnedCards = 1;
+
+        while (spawnedCards <= 20)
+        {
+            temp = SpawnCard(cardPool[index], spawnedCards);
+            cards.Add(temp);
+            temp.TakeOver(Card.CardStatus.Deck, this);
+
+            spawnedCards++;
+            index++;
+
+            if (cardPool.Length == index)
+            {
+                index = 0;
+            }
+        }
+    }
+
+    private Card SpawnCard(GameObject prefab, int number)
+    {
+        GameObject go = Instantiate(prefab, transform.position, transform.rotation, transform);
+        go.name = number + " " + prefab.name;
+
+        Card card = go.GetComponent<Card>();
+        return card;
+    }
+
     public void Organize()
     {
         Vector3 position;

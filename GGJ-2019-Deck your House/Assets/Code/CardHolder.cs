@@ -13,7 +13,7 @@ public class CardHolder : MonoBehaviour, IHolder
             Initialize();
     }
 
-    public void Initialize()
+    public virtual void Initialize()
     {
         cards = new List<Card>();
 

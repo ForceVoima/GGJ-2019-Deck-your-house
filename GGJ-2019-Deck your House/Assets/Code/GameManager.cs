@@ -84,27 +84,32 @@ public class GameManager : MonoBehaviour
     public int player1commonRoomCards = 0;
     public int player2commonRoomCards = 0;
 
+    public bool quickStart = false;
+
     public void Start()
     {
         if (focalPoint == null)
             focalPoint = transform.Find("Focal point").transform;
 
-        /*
-        phase = Phase.RatingsPlayer;
-        expecting = Expecting.Card;
-
         deck.Initialize();
         deck.Shuffle();
         deck.Organize();
 
-        UI.Instance.ShowUI(true);
-        UI.Instance.UpdateText("Player 1. Rate the your cards from 10 to -10:", "Continue");
-        turnNumber = 0;
-        */
+        if (quickStart)
+        {
+            phase = Phase.RatingsPlayer;
+            turnPhase = TurnPhase.Player2;
+            InitNextTurn();
+        }
+        else
+        {
+            phase = Phase.RatingsPlayer;
+            expecting = Expecting.Card;
 
-        phase = Phase.RatingsPlayer;
-        turnPhase = TurnPhase.Player2;
-        InitNextTurn();
+            UI.Instance.ShowUI(true);
+            UI.Instance.UpdateText("Player 1. Rate the your cards from 10 to -10:", "Continue");
+            turnNumber = 0;
+        }
     }
 
     public void CardSelected(Card card)
@@ -164,15 +169,34 @@ public class GameManager : MonoBehaviour
         bool expectingOK = (expecting == Expecting.CardSlot ||
                             expecting == Expecting.CardSlotOrDiscardPile);
 
+        bool player1 = (turnPhase == TurnPhase.Player1);
+        bool player2 = (turnPhase == TurnPhase.Player2);
+
+        bool player1Room = (player1 && slot.ParentRoom.Type == Room.RoomType.Player1);
+        bool player2Room = (player2 && slot.ParentRoom.Type == Room.RoomType.Player2);
+
+        bool commonroom = (slot.ParentRoom.Type == Room.RoomType.CommonRoom) &&
+                          ( (player1 && player1commonRoomCards < 3) ||
+                            (player2 && player2commonRoomCards < 3) );
+
+        bool roomOK = player1Room || player2Room || commonroom;
+
         if ( phase == Phase.NormalTurns &&
              turnOK &&
              expectingOK &&
+             roomOK &&
              slot.Free &&
              selectedCard != null &&
              !playedCard )
         {
             selectedCard.PutIn(slot);
             selectedCard = null;
+
+            if (commonroom && player1)
+                player1commonRoomCards++;
+
+            else if (commonroom && player2)
+                player2commonRoomCards++;
 
             if (!playedCard && !playerDiscard)
             {
@@ -278,6 +302,8 @@ public class GameManager : MonoBehaviour
         }
         else if (turnPhase == TurnPhase.Player2)
         {
+            Debug.Log("Wait for player 1 turn 1!");
+
             // Load instructions for Player 1 turn 1
             phase = Phase.NormalTurns;
             turnPhase = TurnPhase.Wait1;
@@ -294,6 +320,8 @@ public class GameManager : MonoBehaviour
     {
         if (turnPhase == TurnPhase.Wait1)
         {
+            Debug.Log("Start player 1 turn 1!");
+
             turnPhase = TurnPhase.Player1;
             expecting = Expecting.Card;
             UI.Instance.ShowUI(false);

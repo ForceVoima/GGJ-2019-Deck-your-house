@@ -40,7 +40,7 @@ GameObject:
   - component: {fileID: 114192767590949744}
   - component: {fileID: 65418714019750960}
   m_Layer: 8
-  m_Name: Card-default
+  m_Name: Bookshelf
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -255,7 +255,7 @@ MeshRenderer:
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
   m_Materials:
-  - {fileID: 2100000, guid: db932287e16b58849b0c238d3b236bfb, type: 2}
+  - {fileID: 2100000, guid: 122e83b37a869ba4e8786a58ee6fbcf4, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0

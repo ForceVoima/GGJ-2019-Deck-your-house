@@ -40,7 +40,7 @@ GameObject:
   - component: {fileID: 114192767590949744}
   - component: {fileID: 65418714019750960}
   m_Layer: 8
-  m_Name: Card-default
+  m_Name: Armchair
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
