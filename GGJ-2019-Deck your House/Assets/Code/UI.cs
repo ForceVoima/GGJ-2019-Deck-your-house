@@ -50,7 +50,9 @@ public class UI : MonoBehaviour
     public Color neutralColor;
 
     public GameObject tutorialGO;
-    public GameObject Results;
+
+    public GameObject resultsGO;
+    public TextMeshProUGUI scoreText;
 
     public void UpdateHeader(GameManager.TurnPhase turnPhase, string text)
     {
@@ -87,6 +89,12 @@ public class UI : MonoBehaviour
     public void ClearUI()
     {
         ShowUI(false);
+    }
+
+    public void ShowScore(int totalScore)
+    {
+        resultsGO.SetActive(true);
+        scoreText.text = totalScore.ToString();
     }
 
     public void UpdateInstructions(string instructions, string buttonText)

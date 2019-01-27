@@ -371,6 +371,8 @@ public class GameManager : MonoBehaviour
 
     IEnumerator NewGame()
     {
+        UI.Instance.ClearUI();
+
         player1commonRoomCards = 0;
         player2commonRoomCards = 0;
 
@@ -726,14 +728,27 @@ public class GameManager : MonoBehaviour
 
     private void CountScores()
     {
-        int player1Score = player1Room.MyScore();
-        int player2Score = player2Room.MyScore();
-        int commonScore= commonRoom.MyScore();
-
-        UI.Instance.ShowUI(true);
+        /*
         UI.Instance.UpdateInstructions("Player 1 score: " + player1Score.ToString() + System.Environment.NewLine +
                                "Player 2 score: " + player2Score.ToString() + System.Environment.NewLine +
                                "Common score: " + commonScore.ToString(), "OK");
+        */
+
+        StartCoroutine(DelayScoreScreen());
+    }
+
+    IEnumerator DelayScoreScreen()
+    {
+        int player1Score = player1Room.MyScore();
+        int player2Score = player2Room.MyScore();
+        int commonScore = commonRoom.MyScore();
+
+        UI.Instance.ClearUI();
+
+        yield return new WaitForSeconds(0.7f);
+
+        UI.Instance.ShowScore((player1Score + player2Score + commonScore));
+
     }
 
     private void UpdateCardRatings()
