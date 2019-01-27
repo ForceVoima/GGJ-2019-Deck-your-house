@@ -369,6 +369,7 @@ public class GameManager : MonoBehaviour
         foreach (Card card in cardArray)
         {
             card.Enable();
+            card.ClearRatings();
             card.PutIn(deck, true);
             yield return new WaitForSeconds(0.1f);
         }

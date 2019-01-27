@@ -382,4 +382,13 @@ public class Card : MonoBehaviour
     {
         cardCollider.enabled = false;
     }
+
+    public void ClearRatings()
+    {
+        ResetRatingTexts();
+        player1Rating = 0;
+        player1Rated = false;
+        player2Rating = 0;
+        player2Rated = false;
+    }
 }
