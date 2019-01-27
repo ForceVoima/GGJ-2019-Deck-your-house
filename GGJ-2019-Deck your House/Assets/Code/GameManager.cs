@@ -354,6 +354,41 @@ public class GameManager : MonoBehaviour
         {
             NextNormalTurn();
         }
+
+        else if (phase == Phase.EndScreen)
+        {
+            StartCoroutine(NewGame());
+        }
+    }
+
+    IEnumerator NewGame()
+    {
+        player1commonRoomCards = 0;
+        player2commonRoomCards = 0;
+
+        foreach (Card card in cardArray)
+        {
+            card.Enable();
+            card.PutIn(deck, true);
+            yield return new WaitForSeconds(0.1f);
+        }
+
+        yield return new WaitForSeconds(0.2f);
+
+        deck.Shuffle();
+        deck.Organize();
+
+        yield return new WaitForSeconds(0.2f);
+
+        phase = Phase.RatingsPlayer;
+        turnPhase = TurnPhase.Wait1;
+        expecting = Expecting.Continue;
+
+        UI.Instance.ShowUI(true);
+        UI.Instance.UpdateText("Player 1. Rate the your cards from 10 to -10:", "Continue");
+        turnNumber = 0;
+
+        cameraTransitions.TransitionCamera(turnPhase);
     }
 
     private void NextRatingTurn()
