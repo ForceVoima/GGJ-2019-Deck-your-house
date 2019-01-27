@@ -52,6 +52,8 @@ public class Hand : CardHolder, IHolder
 
     public void Organize(GameManager.TurnPhase turnPhase)
     {
+        // Debug.Log("Hand " + name + " is organizing and updating cards during: " + turnPhase);
+
         UpdateCardPositions();
 
         foreach (Card card in cards)
@@ -190,11 +192,16 @@ public class Hand : CardHolder, IHolder
             card.Disable();
         }
 
-        Organize(GameManager.Instance.WhoseTurn);
+        if (!player2)
+            Organize(GameManager.TurnPhase.Player1);
+        else
+            Organize(GameManager.TurnPhase.Player2);
     }
 
     public void UpdateHandCardRatings(GameManager.TurnPhase turnPhase)
     {
+        // Debug.Log("Hand " + name + " is updating card reading during " + turnPhase);
+
         foreach (Card card in cards)
         {
             card.ShowPlayerRating(turnPhase);

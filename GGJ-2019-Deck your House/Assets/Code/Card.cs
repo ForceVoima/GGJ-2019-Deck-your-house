@@ -80,6 +80,8 @@ public class Card : MonoBehaviour
 
     public IHolder holder;
 
+    public GameManager.TurnPhase whoseCard;
+
     // Use this for initialization
     void Start ()
     {
@@ -138,6 +140,8 @@ public class Card : MonoBehaviour
 
     public void ShowPlayerRating(GameManager.TurnPhase turnPhase)
     {
+        whoseCard = turnPhase;
+
         if (turnPhase == GameManager.TurnPhase.Player1)
         {
             yourValue.text = player1Rating.ToString();

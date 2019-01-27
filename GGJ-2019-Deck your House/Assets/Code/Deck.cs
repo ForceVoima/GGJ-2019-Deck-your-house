@@ -134,6 +134,8 @@ public class Deck : CardHolder
 
     IEnumerator DealCards(GameManager.TurnPhase turnPhase)
     {
+        Debug.Log("Deck " + name + " dealing cards when " + turnPhase);
+
         while (cardsToDeal > 0)
         {
             cards[cards.Count - 1].ShowPlayerRating(turnPhase);

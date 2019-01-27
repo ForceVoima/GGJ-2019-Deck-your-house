@@ -500,7 +500,7 @@ public class GameManager : MonoBehaviour
             UI.Instance.UpdateHeader(turnPhase, "Player 1: turn " + turnNumber);
             UI.Instance.UpdateInstructions("Play 1 card and discard 1 card OR discard 2 cards and play 1 from the discard pile.");
 
-            player2Hand.UpdateHandCardRatings(TurnPhase.Player1);
+            player1Hand.UpdateHandCardRatings(TurnPhase.Player1);
         }
         else if (turnPhase == TurnPhase.Player1)
         {
@@ -560,16 +560,22 @@ public class GameManager : MonoBehaviour
             UI.Instance.ClearUI();
             UI.Instance.UpdateHeader(turnPhase, "Pass turn to player 1");
             UI.Instance.UpdateInstructions("Hand the device to player 1.", "Continue");
+
+            player2Hand.UpdateHandCardRatings(TurnPhase.Player2);
         }
 
         player1Room.AlignAllCards(turnPhase);
         player2Room.AlignAllCards(turnPhase);
         commonRoom.AlignAllCards(turnPhase);
 
-        player1Room.ShowAllCardRatings(turnPhase);
-        player2Room.ShowAllCardRatings(turnPhase);
-        commonRoom.ShowAllCardRatings(turnPhase);
-        discardPile.UpdateAllRatings(turnPhase);
+        if (turnPhase == TurnPhase.Player1 ||
+            turnPhase == TurnPhase.Player2)
+        {
+            player1Room.ShowAllCardRatings(turnPhase);
+            player2Room.ShowAllCardRatings(turnPhase);
+            commonRoom.ShowAllCardRatings(turnPhase);
+            discardPile.UpdateAllRatings(turnPhase);
+        }
 
         cameraTransitions.TransitionCamera(turnPhase);
     }
@@ -751,13 +757,5 @@ public class GameManager : MonoBehaviour
 
         UI.Instance.ShowScore((player1Score + player2Score + commonScore));
 
-    }
-
-    private void UpdateCardRatings()
-    {
-        foreach (Card card in cardArray)
-        {
-            card.ShowPlayerRating(turnPhase);
-        }
     }
 }
