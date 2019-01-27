@@ -30,6 +30,7 @@ public class Card : MonoBehaviour
     private Vector3 endPos;
 
     private Vector3 previousPos;
+    private Quaternion previousRot;
 
     private Quaternion startRot;
     private Quaternion endRot;
@@ -300,6 +301,7 @@ public class Card : MonoBehaviour
     private void BasicMove(Vector3 target)
     {
         previousPos = transform.position;
+        previousRot = transform.rotation;
         timer = 0f;
 
         startPos = transform.position;
@@ -326,7 +328,7 @@ public class Card : MonoBehaviour
 
     public void Return(bool faceUp)
     {
-        InitMove(previousPos, faceUp, 0.4f);
+        InitMove(previousPos, previousRot, 0.4f);
     }
 
     public bool MoveFinished(float deltaTime)
