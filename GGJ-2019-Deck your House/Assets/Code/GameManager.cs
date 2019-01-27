@@ -495,6 +495,8 @@ public class GameManager : MonoBehaviour
             UI.Instance.ClearUI();
             UI.Instance.UpdateHeader(turnPhase, "Player 1: turn " + turnNumber);
             UI.Instance.UpdateInstructions("Play 1 card and discard 1 card OR discard 2 cards and play 1 from the discard pile.");
+
+            player2Hand.UpdateHandCardRatings(TurnPhase.Player1);
         }
         else if (turnPhase == TurnPhase.Player1)
         {
@@ -532,6 +534,8 @@ public class GameManager : MonoBehaviour
             UI.Instance.ClearUI();
             UI.Instance.UpdateHeader(turnPhase, "Player 2: turn " + turnNumber);
             UI.Instance.UpdateInstructions("Play 1 card and discard 1 card OR discard 2 cards and play 1 from the discard pile.");
+
+            player2Hand.UpdateHandCardRatings(TurnPhase.Player2);
         }
         else if (turnPhase == TurnPhase.Player2)
         {

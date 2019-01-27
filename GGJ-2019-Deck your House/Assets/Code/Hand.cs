@@ -192,4 +192,12 @@ public class Hand : CardHolder, IHolder
 
         Organize(GameManager.Instance.WhoseTurn);
     }
+
+    public void UpdateHandCardRatings(GameManager.TurnPhase turnPhase)
+    {
+        foreach (Card card in cards)
+        {
+            card.ShowPlayerRating(turnPhase);
+        }
+    }
 }

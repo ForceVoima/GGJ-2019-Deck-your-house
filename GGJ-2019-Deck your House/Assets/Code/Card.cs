@@ -104,6 +104,8 @@ public class Card : MonoBehaviour
 
         yourValue.text = "";
         theirValue.text = "";
+
+        sumValue.text = "";
     }
 	
 	// Update is called once per frame
@@ -120,6 +122,7 @@ public class Card : MonoBehaviour
     {
         player1Rating = value;
         yourValue.text = player1Rating.ToString();
+        sumValue.text = player1Rating.ToString();
 
         player1Rated = true;
     }
@@ -128,6 +131,7 @@ public class Card : MonoBehaviour
     {
         player2Rating = value;
         yourValue.text = player2Rating.ToString();
+        sumValue.text = player2Rating.ToString();
 
         player2Rated = true;
     }
@@ -138,37 +142,46 @@ public class Card : MonoBehaviour
         {
             yourValue.text = player1Rating.ToString();
             theirValue.text = "?";
+            sumValue.text = (player1Rating).ToString();
         }
         else if (turnPhase == GameManager.TurnPhase.Player2)
         {
             yourValue.text = player2Rating.ToString();
             theirValue.text = "?";
+            sumValue.text = (player2Rating).ToString();
         }
         else
         {
             yourValue.text = "?";
             theirValue.text = "?";
+            sumValue.text = "?";
         }
     }
 
     public void ShowAllRatings(GameManager.TurnPhase turnPhase)
     {
-        if (turnPhase == GameManager.TurnPhase.Player1)
+        if (turnPhase == GameManager.TurnPhase.Player1 ||
+            turnPhase == GameManager.TurnPhase.Wait1)
         {
             yourValue.text = player1Rating.ToString();
             theirValue.text = player2Rating.ToString();
         }
-        else if (turnPhase == GameManager.TurnPhase.Player2)
+        else if (turnPhase == GameManager.TurnPhase.Player2 ||
+            turnPhase == GameManager.TurnPhase.Wait2)
         {
             yourValue.text = player2Rating.ToString();
             theirValue.text = player1Rating.ToString();
         }
+
+        sumValue.text = (player1Rating + player2Rating).ToString();
     }
 
     public void ResetRatingTexts()
     {
         yourValue.text = "";
         theirValue.text = "";
+
+        sumValue.text = "";
     }
 
     #region Selections
