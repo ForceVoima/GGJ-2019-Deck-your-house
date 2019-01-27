@@ -20,6 +20,20 @@ public class Hand : CardHolder, IHolder
 
     public float[] angles;
 
+    [Range(-180f, 180f)]
+    public float yourTurnAngle = 80f;
+    [Range(-180f, 180f)]
+    public float notYourTurnAngle = 0f;
+
+    public bool player2 = false;
+
+    /*
+    public bool turning = false;
+    
+    private float timer = 0f;
+    private float timerEnd = 0.6f;
+    */
+
     public override void Enter(Card card)
     {
         cards.Add(card);
@@ -126,4 +140,51 @@ public class Hand : CardHolder, IHolder
             cards[i].InitMove(currentPos, currentRot, 0.5f);
 		}
 	}
+
+    public void DiscardWholeHand(Discard discardPile)
+    {
+        StartCoroutine(DiscardHand(discardPile));
+    }
+
+    IEnumerator DiscardHand(Discard discardPile)
+    {
+        yield return new WaitForSeconds(0.2f);
+
+        Card[] cardArray = cards.ToArray();
+
+        for (int i = 0; i < cardArray.Length; i++)
+        {
+            cardArray[i].PutIn(discardPile);
+        }
+    }
+
+    public void YourTurn()
+    {
+        if (!player2)
+            transform.rotation = Quaternion.Euler(yourTurnAngle, 0f, 0f);
+
+        else
+            transform.rotation = Quaternion.Euler(yourTurnAngle, 180f, 0f);
+
+        foreach (Card card in cards)
+        {
+            card.Enable();
+        }
+    }
+
+    public void NotYourTurn()
+    {
+        if (!player2)
+            transform.rotation = Quaternion.Euler(notYourTurnAngle, 0f, 0f);
+
+        else
+            transform.rotation = Quaternion.Euler(notYourTurnAngle, 180f, 0f);
+
+        foreach (Card card in cards)
+        {
+            card.Disable();
+        }
+
+        Organize(GameManager.Instance.WhoseTurn);
+    }
 }

@@ -42,9 +42,9 @@ public class Discard : CardHolder
         }
     }
 
-    public void DealCards(int amount, Hand hand)
+    public void DealCards(Hand hand)
     {
-        cardsToDeal = amount;
+        cardsToDeal = cards.Count;
         dealToHand = hand;
 
         StartCoroutine(DealCards());

@@ -77,6 +77,9 @@ public class GameManager : MonoBehaviour
     public Hand player1Hand;
     public Hand player2Hand;
 
+    public Hand player1DiscardHand;
+    public Hand player2DiscardHand;
+
     public Discard discardPile;
 
     [Range(0, 5)]
@@ -238,6 +241,11 @@ public class GameManager : MonoBehaviour
                 playedCard = true;
                 InitNextTurn();
             }
+
+            if (doubleDiscard && player1)
+                player1DiscardHand.DiscardWholeHand(discardPile);
+            else if (doubleDiscard && player2)
+                player2DiscardHand.DiscardWholeHand(discardPile);
         }
     }
 
@@ -272,7 +280,17 @@ public class GameManager : MonoBehaviour
 
             else if (!playedCard && playerDiscard)
             {
-                Debug.Log("Select from Discard pile!");
+                if (turnPhase == TurnPhase.Player1)
+                {
+                    player1Hand.NotYourTurn();
+                    discardPile.DealCards(player1DiscardHand);
+                }
+
+                else if (turnPhase == TurnPhase.Player2)
+                {
+                    player2Hand.NotYourTurn();
+                    discardPile.DealCards(player2DiscardHand);
+                }
 
                 doubleDiscard = true;
                 expecting = Expecting.Card;
@@ -403,11 +421,16 @@ public class GameManager : MonoBehaviour
             playedCard = false;
             playerDiscard = false;
             doubleDiscard = false;
+
+            player1Hand.YourTurn();
+            player2Hand.NotYourTurn();
         }
         else if (turnPhase == TurnPhase.Player1)
         {
             turnPhase = TurnPhase.Wait2;
             expecting = Expecting.Continue;
+
+            player1Hand.NotYourTurn();
 
             UI.Instance.ShowUI(true);
             UI.Instance.UpdateText("Hand the device to player 2.", "Turn " + turnNumber);
@@ -416,11 +439,6 @@ public class GameManager : MonoBehaviour
         {
             turnPhase = TurnPhase.Player2;
             expecting = Expecting.Card;
-
-            playedCard = false;
-            playerDiscard = false;
-            doubleDiscard = false;
-
             UI.Instance.ShowUI(false);
 
             if (turnNumber == 1)
@@ -432,6 +450,13 @@ public class GameManager : MonoBehaviour
             {
                 deck.DealCards(1, player2Hand, turnPhase);
             }
+
+            playedCard = false;
+            playerDiscard = false;
+            doubleDiscard = false;
+
+            player2Hand.YourTurn();
+            player1Hand.NotYourTurn();
         }
         else if (turnPhase == TurnPhase.Player2)
         {
@@ -444,6 +469,8 @@ public class GameManager : MonoBehaviour
 
             turnPhase = TurnPhase.Wait1;
             expecting = Expecting.Continue;
+
+            player2Hand.NotYourTurn();
 
             turnNumber++;
 

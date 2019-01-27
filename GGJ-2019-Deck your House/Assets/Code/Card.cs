@@ -240,6 +240,8 @@ public class Card : MonoBehaviour
         InitMove(hand.transform.position, false);
         status = CardStatus.PlayerHand;
         NewHolder(hand);
+
+        cardCollider.enabled = true;
     }
 
     public void PutIn(Discard discard)
@@ -367,5 +369,15 @@ public class Card : MonoBehaviour
 
         else
             return player1Rating + player2Rating;
+    }
+
+    public void Enable()
+    {
+        cardCollider.enabled = true;
+    }
+
+    public void Disable()
+    {
+        cardCollider.enabled = false;
     }
 }
