@@ -53,4 +53,12 @@ public class CardSlot : MonoBehaviour, IHolder
                 currentCard.InitMove(Position, Quaternion.LookRotation(Vector3.up, Vector3.back));
         }
     }
+
+    public void AllRatings(GameManager.TurnPhase turnPhase)
+    {
+        if (currentCard != null)
+        {
+            currentCard.ShowAllRatings(turnPhase);
+        }
+    }
 }

@@ -49,4 +49,12 @@ public class Room : MonoBehaviour
             slot.AlignCards(turnPhase);
         }
     }
+
+    public void ShowAllCardRatings(GameManager.TurnPhase turnPhase)
+    {
+        foreach (CardSlot slot in allSlots)
+        {
+            slot.AllRatings(turnPhase);
+        }
+    }
 }

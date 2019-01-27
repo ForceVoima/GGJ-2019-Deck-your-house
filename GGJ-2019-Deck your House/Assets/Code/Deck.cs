@@ -82,6 +82,16 @@ public class Deck : CardHolder
             array[i] = temp;
         }
 
+        Vector3 position;
+
+        for (int i = 0; i < array.Length; i++)
+        {
+            position = cards[i].transform.position;
+            position.y += i * cardThickness;
+            cards[i].transform.position = position;
+            cards[i].transform.rotation = Quaternion.LookRotation(Vector3.down, Vector3.right);
+        }
+
         cards.Clear();
 
         for (int i = 0; i < array.Length; i++)
@@ -114,15 +124,15 @@ public class Deck : CardHolder
         }
     }
 
-    public void DealCards(int amount, Hand hand)
+    public void DealCards(int amount, Hand hand, GameManager.TurnPhase turnPhase)
     {
         cardsToDeal = amount;
         dealToHand = hand;
 
-        StartCoroutine(DealCards());
+        StartCoroutine(DealCards(turnPhase));
     }
 
-    IEnumerator DealCards()
+    IEnumerator DealCards(GameManager.TurnPhase turnPhase)
     {
         while (cardsToDeal > 0)
         {
@@ -133,6 +143,6 @@ public class Deck : CardHolder
         }
 
         yield return new WaitForSeconds(0.5f);
-        dealToHand.Organize();
+        dealToHand.Organize(turnPhase);
     }
 }

@@ -150,6 +150,20 @@ public class Card : MonoBehaviour
         }
     }
 
+    public void ShowAllRatings(GameManager.TurnPhase turnPhase)
+    {
+        if (turnPhase == GameManager.TurnPhase.Player1)
+        {
+            yourValue.text = player1Rating.ToString();
+            theirValue.text = player2Rating.ToString();
+        }
+        else if (turnPhase == GameManager.TurnPhase.Player2)
+        {
+            yourValue.text = player2Rating.ToString();
+            theirValue.text = player1Rating.ToString();
+        }
+    }
+
     public void ResetRatingTexts()
     {
         yourValue.text = "";

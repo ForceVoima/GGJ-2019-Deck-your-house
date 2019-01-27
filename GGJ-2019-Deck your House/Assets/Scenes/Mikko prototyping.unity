@@ -3582,7 +3582,7 @@ Prefab:
     - target: {fileID: 114216108582410826, guid: 5131f450bf6c7af448d3f5324c26a314,
         type: 2}
       propertyPath: quickStart
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 114216108582410826, guid: 5131f450bf6c7af448d3f5324c26a314,
         type: 2}
@@ -3609,6 +3609,11 @@ Prefab:
       propertyPath: player2Room
       value: 
       objectReference: {fileID: 1205449}
+    - target: {fileID: 114216108582410826, guid: 5131f450bf6c7af448d3f5324c26a314,
+        type: 2}
+      propertyPath: discardPile
+      value: 
+      objectReference: {fileID: 1769914818}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 5131f450bf6c7af448d3f5324c26a314, type: 2}
   m_IsPrefabParent: 0

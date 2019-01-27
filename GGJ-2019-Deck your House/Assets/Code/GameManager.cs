@@ -61,6 +61,11 @@ public class GameManager : MonoBehaviour
     }
 
     public TurnPhase turnPhase = TurnPhase.Wait1;
+
+    public TurnPhase WhoseTurn
+    {
+        get { return turnPhase; }
+    }
 #endregion Enums
 
     public Card selectedCard = null;
@@ -71,6 +76,8 @@ public class GameManager : MonoBehaviour
 
     public Hand player1Hand;
     public Hand player2Hand;
+
+    public Discard discardPile;
 
     [Range(0, 5)]
     public int turnNumber = 0;
@@ -212,6 +219,7 @@ public class GameManager : MonoBehaviour
              !playedCard )
         {
             selectedCard.PutIn(slot, turnPhase);
+            selectedCard.ShowAllRatings(turnPhase);
             selectedCard = null;
 
             if (commonroom && player1)
@@ -247,6 +255,7 @@ public class GameManager : MonoBehaviour
              selectedCard != null)
         {
             selectedCard.PutIn(discard);
+            selectedCard.ShowAllRatings(turnPhase);
             selectedCard = null;
 
             if (!playedCard && !playerDiscard)
@@ -313,8 +322,6 @@ public class GameManager : MonoBehaviour
                 tableGrid.Reset(cardArray);
             }
         }
-
-        UpdateCardRatings();
     }
 
 #region Turns
@@ -360,8 +367,6 @@ public class GameManager : MonoBehaviour
         }
         else if (turnPhase == TurnPhase.Player2)
         {
-            Debug.Log("Wait for player 1 turn 1!");
-
             // Load instructions for Player 1 turn 1
             phase = Phase.NormalTurns;
             turnPhase = TurnPhase.Wait1;
@@ -380,8 +385,6 @@ public class GameManager : MonoBehaviour
     {
         if (turnPhase == TurnPhase.Wait1)
         {
-            Debug.Log("Start player 1 turn 1!");
-
             turnPhase = TurnPhase.Player1;
             expecting = Expecting.Card;
             UI.Instance.ShowUI(false);
@@ -389,13 +392,12 @@ public class GameManager : MonoBehaviour
             if (turnNumber == 1)
             {
                 deck.Shuffle();
-                deck.Organize();
-                deck.DealCards(6, player1Hand);
+                deck.DealCards(6, player1Hand, turnPhase);
             }
             else if (turnNumber >= 2 &&
                      turnNumber <= 5)
             {
-                deck.DealCards(1, player1Hand);
+                deck.DealCards(1, player1Hand, turnPhase);
             }
 
             playedCard = false;
@@ -423,12 +425,12 @@ public class GameManager : MonoBehaviour
 
             if (turnNumber == 1)
             {
-                deck.DealCards(6, player2Hand);
+                deck.DealCards(6, player2Hand, turnPhase);
             }
             else if (turnNumber >= 2 &&
                      turnNumber <= 5)
             {
-                deck.DealCards(1, player2Hand);
+                deck.DealCards(1, player2Hand, turnPhase);
             }
         }
         else if (turnPhase == TurnPhase.Player2)
@@ -452,6 +454,12 @@ public class GameManager : MonoBehaviour
         player1Room.AlignAllCards(turnPhase);
         player2Room.AlignAllCards(turnPhase);
         commonRoom.AlignAllCards(turnPhase);
+
+        player1Room.ShowAllCardRatings(turnPhase);
+        player2Room.ShowAllCardRatings(turnPhase);
+        commonRoom.ShowAllCardRatings(turnPhase);
+        discardPile.UpdateAllRatings(turnPhase);
+
         cameraTransitions.TransitionCamera(turnPhase);
     }
 #endregion Turns
@@ -602,14 +610,6 @@ public class GameManager : MonoBehaviour
         foreach (Card card in cardArray)
         {
             card.ShowPlayerRating(turnPhase);
-        }
-    }
-
-    private void AlignCards()
-    {
-        foreach (Card card in cardArray)
-        {
-
         }
     }
 }

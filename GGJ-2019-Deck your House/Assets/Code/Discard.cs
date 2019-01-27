@@ -61,6 +61,14 @@ public class Discard : CardHolder
         }
 
         yield return new WaitForSeconds(0.5f);
-        dealToHand.Organize();
+        dealToHand.Organize(GameManager.Instance.WhoseTurn);
+    }
+
+    public void UpdateAllRatings(GameManager.TurnPhase turnPhase)
+    {
+        foreach (Card card in cards)
+        {
+            card.ShowAllRatings(turnPhase);
+        }
     }
 }
