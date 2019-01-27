@@ -602,7 +602,14 @@ public class GameManager : MonoBehaviour
 
     private void CountScores()
     {
+        int player1Score = player1Room.MyScore();
+        int player2Score = player2Room.MyScore();
+        int commonScore= commonRoom.MyScore();
 
+        UI.Instance.ShowUI(true);
+        UI.Instance.UpdateText("Player 1 score: " + player1Score.ToString() + System.Environment.NewLine +
+                               "Player 2 score: " + player2Score.ToString() + System.Environment.NewLine +
+                               "Common score: " + commonScore.ToString(), "OK");
     }
 
     private void UpdateCardRatings()

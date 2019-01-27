@@ -61,4 +61,12 @@ public class CardSlot : MonoBehaviour, IHolder
             currentCard.ShowAllRatings(turnPhase);
         }
     }
+
+    public int MyScore()
+    {
+        if (currentCard != null)
+            return currentCard.MyScore(parent.Type);
+        else
+            return 0;
+    }
 }

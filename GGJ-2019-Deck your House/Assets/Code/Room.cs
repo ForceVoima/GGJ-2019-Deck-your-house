@@ -57,4 +57,16 @@ public class Room : MonoBehaviour
             slot.AllRatings(turnPhase);
         }
     }
+
+    public int MyScore()
+    {
+        int sum = 0;
+
+        foreach (CardSlot slot in allSlots)
+        {
+            sum += slot.MyScore();
+        }
+
+        return sum;
+    }
 }

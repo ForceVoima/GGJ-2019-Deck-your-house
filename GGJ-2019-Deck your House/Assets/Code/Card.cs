@@ -356,4 +356,16 @@ public class Card : MonoBehaviour
         return t * t * t * (t * (6f * t - 15f) + 10f);
     }
 #endregion MoveStuff
+
+    public int MyScore(Room.RoomType type)
+    {
+        if (type == Room.RoomType.Player1)
+            return player1Rating;
+
+        else if (type == Room.RoomType.Player2)
+            return player2Rating;
+
+        else
+            return player1Rating + player2Rating;
+    }
 }
