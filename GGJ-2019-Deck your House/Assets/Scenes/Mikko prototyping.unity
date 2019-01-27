@@ -3588,7 +3588,7 @@ Prefab:
     - target: {fileID: 114216108582410826, guid: 5131f450bf6c7af448d3f5324c26a314,
         type: 2}
       propertyPath: quickStart
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 114216108582410826, guid: 5131f450bf6c7af448d3f5324c26a314,
         type: 2}

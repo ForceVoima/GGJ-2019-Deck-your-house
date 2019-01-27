@@ -28,27 +28,82 @@ public class UI : MonoBehaviour
             Destroy(gameObject);
     }
     #endregion Statics
+    public GameObject instructionsGO;
 
     [SerializeField]
-    private TextMeshProUGUI instructions;
-    [SerializeField]
-    private TextMeshProUGUI guide;
+    private TextMeshProUGUI instructionsText;
+
+    public GameObject buttonGO;
+
     [SerializeField]
     private TextMeshProUGUI buttonText;
 
     [SerializeField]
     private GameObject[] children;
 
-    public void UpdateText(string instructions, string buttonText)
+    public GameObject headerGO;
+    public UnityEngine.UI.Image headerImage;
+    public TextMeshProUGUI headerText;
+
+    public Color player1Color;
+    public Color player2Color;
+    public Color neutralColor;
+
+    public GameObject tutorialGO;
+    public GameObject Results;
+
+    public void UpdateHeader(GameManager.TurnPhase turnPhase, string text)
     {
-        this.instructions.text = instructions;
+        headerGO.SetActive(true);
+        headerText.text = text;
+
+        switch (turnPhase)
+        {
+            case GameManager.TurnPhase.Wait1:
+                headerImage.color = neutralColor;
+                break;
+            case GameManager.TurnPhase.Player1:
+                headerImage.color = player1Color;
+                break;
+            case GameManager.TurnPhase.Wait2:
+                headerImage.color = neutralColor;
+                break;
+            case GameManager.TurnPhase.Player2:
+                headerImage.color = player2Color;
+                break;
+        }
+    }
+
+    public void ShowTutorial()
+    {
+        tutorialGO.SetActive(true);
+    }
+
+    public void ShowUI()
+    {
+        ShowUI(true);
+    }
+
+    public void ClearUI()
+    {
+        ShowUI(false);
+    }
+
+    public void UpdateInstructions(string instructions, string buttonText)
+    {
+        instructionsGO.SetActive(true);
+        buttonGO.SetActive(true);
+
+        instructionsText.text = instructions;
         this.buttonText.text = buttonText;
     }
 
-    public void UpdateGuide(string guideText)
+    public void UpdateInstructions(string instructions)
     {
-        guide.gameObject.SetActive(true);
-        guide.text = guideText;
+        instructionsGO.SetActive(true);
+        buttonGO.SetActive(false);
+
+        instructionsText.text = instructions;
     }
 
     public void ShowUI(bool value)

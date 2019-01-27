@@ -137,10 +137,15 @@ public class GameManager : MonoBehaviour
         {
             phase = Phase.RatingsPlayer;
             expecting = Expecting.Card;
-
-            UI.Instance.ShowUI(true);
-            UI.Instance.UpdateText("Player 1. Rate the your cards from 10 to -10:", "Continue");
             turnNumber = 0;
+
+            UI.Instance.ClearUI();
+            UI.Instance.ShowTutorial();
+
+            discardPile.gameObject.SetActive(false);
+            player1Room.gameObject.SetActive(false);
+            player2Room.gameObject.SetActive(false);
+            commonRoom.gameObject.SetActive(false);
         }
     }
 
@@ -235,6 +240,7 @@ public class GameManager : MonoBehaviour
             {
                 playedCard = true;
                 expecting = Expecting.Card;
+                UI.Instance.UpdateInstructions("Now discard 1 card.");
             }
             else if (!playedCard && playerDiscard)
             {
@@ -284,12 +290,14 @@ public class GameManager : MonoBehaviour
                 {
                     player1Hand.NotYourTurn();
                     discardPile.DealCards(player1DiscardHand);
+                    UI.Instance.UpdateInstructions("Play one card from the discard pile.");
                 }
 
                 else if (turnPhase == TurnPhase.Player2)
                 {
                     player2Hand.NotYourTurn();
                     discardPile.DealCards(player2DiscardHand);
+                    UI.Instance.UpdateInstructions("Play one card from the discard pile.");
                 }
 
                 doubleDiscard = true;
@@ -317,7 +325,7 @@ public class GameManager : MonoBehaviour
     {
         if (phase == Phase.RatingsPlayer)
         {
-            tableGrid.transform.position = sceneCamera.transform.position + sceneCamera.transform.forward * 10f;
+            tableGrid.transform.position = sceneCamera.transform.position + sceneCamera.transform.forward * 11f;
 
             if (turnPhase == TurnPhase.Player1)
             {
@@ -384,12 +392,19 @@ public class GameManager : MonoBehaviour
         phase = Phase.RatingsPlayer;
         turnPhase = TurnPhase.Wait1;
         expecting = Expecting.Continue;
-
-        UI.Instance.ShowUI(true);
-        UI.Instance.UpdateText("Player 1. Rate the your cards from 10 to -10:", "Continue");
+        
+        UI.Instance.ClearUI();
+        UI.Instance.ShowTutorial();
         turnNumber = 0;
 
         cameraTransitions.TransitionCamera(turnPhase);
+
+        yield return new WaitForSeconds(0.2f);
+
+        discardPile.gameObject.SetActive(false);
+        player1Room.gameObject.SetActive(false);
+        player2Room.gameObject.SetActive(false);
+        commonRoom.gameObject.SetActive(false);
     }
 
     private void NextRatingTurn()
@@ -399,28 +414,44 @@ public class GameManager : MonoBehaviour
             turnPhase = TurnPhase.Player1;
             expecting = Expecting.Card;
             ratingToGive = 10;
-            UI.Instance.ShowUI(false);
+
+            UI.Instance.ClearUI();
+            UI.Instance.UpdateHeader(turnPhase, "Player 1: Rate items");
+            UI.Instance.UpdateInstructions("Which of these bring you the most joy?" +
+                                           System.Environment.NewLine +
+                                           "Which card is worth " + ratingToGive + "?");
         }
         else if (turnPhase == TurnPhase.Player1)
         {
             turnPhase = TurnPhase.Wait2;
             expecting = Expecting.Continue;
-            
-            UI.Instance.ShowUI(true);
-            UI.Instance.UpdateText("Player 2: Rate your cards from 10 to -10:", "Continue");
+
+            UI.Instance.ClearUI();
+            UI.Instance.UpdateHeader(turnPhase, "Pass turn to player 2");
+            UI.Instance.UpdateInstructions("Pass turn to player 2.", "Continue");
         }
         else if (turnPhase == TurnPhase.Wait2)
         {
             turnPhase = TurnPhase.Player2;
             expecting = Expecting.Card;
             ratingToGive = 10;
-            UI.Instance.ShowUI(false);
+
+            UI.Instance.ClearUI();
+            UI.Instance.UpdateHeader(turnPhase, "Player 2: Rate items");
+            UI.Instance.UpdateInstructions("Which of these bring you the most joy?" +
+                                           System.Environment.NewLine +
+                                           "Which card is worth " + ratingToGive + "?");
 
             deck.Shuffle();
             deck.Organize();
         }
         else if (turnPhase == TurnPhase.Player2)
         {
+            discardPile.gameObject.SetActive(true);
+            player1Room.gameObject.SetActive(true);
+            player2Room.gameObject.SetActive(true);
+            commonRoom.gameObject.SetActive(true);
+
             // Load instructions for Player 1 turn 1
             phase = Phase.NormalTurns;
             turnPhase = TurnPhase.Wait1;
@@ -428,8 +459,9 @@ public class GameManager : MonoBehaviour
 
             turnNumber = 1;
 
-            UI.Instance.ShowUI(true);
-            UI.Instance.UpdateText("Hand the device to player 1.", "Turn " + turnNumber);
+            UI.Instance.ClearUI();
+            UI.Instance.UpdateHeader(turnPhase, "Pass turn to player 1");
+            UI.Instance.UpdateInstructions("Hand the device to player 1.", "Continue");
         }
 
         cameraTransitions.TransitionCamera(turnPhase);
@@ -441,7 +473,6 @@ public class GameManager : MonoBehaviour
         {
             turnPhase = TurnPhase.Player1;
             expecting = Expecting.Card;
-            UI.Instance.ShowUI(false);
 
             if (turnNumber == 1)
             {
@@ -460,6 +491,10 @@ public class GameManager : MonoBehaviour
 
             player1Hand.YourTurn();
             player2Hand.NotYourTurn();
+            
+            UI.Instance.ClearUI();
+            UI.Instance.UpdateHeader(turnPhase, "Player 1: turn " + turnNumber);
+            UI.Instance.UpdateInstructions("Play 1 card and discard 1 card OR discard 2 cards and play 1 from the discard pile.");
         }
         else if (turnPhase == TurnPhase.Player1)
         {
@@ -468,14 +503,14 @@ public class GameManager : MonoBehaviour
 
             player1Hand.NotYourTurn();
 
-            UI.Instance.ShowUI(true);
-            UI.Instance.UpdateText("Hand the device to player 2.", "Turn " + turnNumber);
+            UI.Instance.ClearUI();
+            UI.Instance.UpdateHeader(turnPhase, "Pass turn to player 2");
+            UI.Instance.UpdateInstructions("Hand the device to player 2.", "Continue");
         }
         else if (turnPhase == TurnPhase.Wait2)
         {
             turnPhase = TurnPhase.Player2;
             expecting = Expecting.Card;
-            UI.Instance.ShowUI(false);
 
             if (turnNumber == 1)
             {
@@ -493,6 +528,10 @@ public class GameManager : MonoBehaviour
 
             player2Hand.YourTurn();
             player1Hand.NotYourTurn();
+
+            UI.Instance.ClearUI();
+            UI.Instance.UpdateHeader(turnPhase, "Player 2: turn " + turnNumber);
+            UI.Instance.UpdateInstructions("Play 1 card and discard 1 card OR discard 2 cards and play 1 from the discard pile.");
         }
         else if (turnPhase == TurnPhase.Player2)
         {
@@ -510,8 +549,9 @@ public class GameManager : MonoBehaviour
 
             turnNumber++;
 
-            UI.Instance.ShowUI(true);
-            UI.Instance.UpdateText("Hand the device to player 1.", "Turn " + turnNumber);
+            UI.Instance.ClearUI();
+            UI.Instance.UpdateHeader(turnPhase, "Pass turn to player 1");
+            UI.Instance.UpdateInstructions("Hand the device to player 1.", "Continue");
         }
 
         player1Room.AlignAllCards(turnPhase);
@@ -576,6 +616,9 @@ public class GameManager : MonoBehaviour
         card.Select();
         selectedCard = card;
         expecting = Expecting.RatingConfirmation;
+        UI.Instance.UpdateInstructions("Is this card worth " + ratingToGive + "?" +
+                                       System.Environment.NewLine +
+                                       "Click again to confirm!");
     }
 
     private void DeFocusCard(Card card)
@@ -584,6 +627,9 @@ public class GameManager : MonoBehaviour
         card.Deselect();
         selectedCard = null;
         expecting = Expecting.Card;
+        UI.Instance.UpdateInstructions("Rate the rest of the cards from most to least favorite." +
+                                       System.Environment.NewLine +
+                                       "Which card is worth " + ratingToGive + "?");
     }
 
     private void NextRating()
@@ -592,17 +638,28 @@ public class GameManager : MonoBehaviour
         {
             ratingToGive--;
             expecting = Expecting.Card;
+
+            UI.Instance.UpdateInstructions("Rate the rest of the cards from most to least favorite." +
+                                           System.Environment.NewLine +
+                                           "Which card is worth " + ratingToGive + "?");
         }
         else if (ratingToGive == 1)
         {
             ratingToGive = -1;
             expecting = Expecting.Card;
-            // Update UI help text
+
+            UI.Instance.UpdateInstructions("Rate the rest of the cards from most to least favorite." +
+                                           System.Environment.NewLine +
+                                           "Which card is worth " + ratingToGive + "?");
         }
         else if (ratingToGive > -10)
         {
             ratingToGive--;
             expecting = Expecting.Card;
+
+            UI.Instance.UpdateInstructions("Rate the rest of the cards from most to least favorite." +
+                                           System.Environment.NewLine +
+                                           "Which card is worth " + ratingToGive + "?");
         }
         else if (ratingToGive == -10)
         {
@@ -670,7 +727,7 @@ public class GameManager : MonoBehaviour
         int commonScore= commonRoom.MyScore();
 
         UI.Instance.ShowUI(true);
-        UI.Instance.UpdateText("Player 1 score: " + player1Score.ToString() + System.Environment.NewLine +
+        UI.Instance.UpdateInstructions("Player 1 score: " + player1Score.ToString() + System.Environment.NewLine +
                                "Player 2 score: " + player2Score.ToString() + System.Environment.NewLine +
                                "Common score: " + commonScore.ToString(), "OK");
     }

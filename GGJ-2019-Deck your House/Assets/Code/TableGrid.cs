@@ -62,7 +62,7 @@ public class TableGrid : CardHolder, IHolder
             {
                 position = transform.position;
                 position += ((1f * x - 0.5f) - (width / 2f)) * right * horizontalSpacing;
-                position += ((1f * y - 0.5f) - (height / 2f)) * up * verticalSpacing;
+                position += ((1f * y - 0.75f) - (height / 2f)) * up * verticalSpacing;
 
                 // cards[cardNumber].transform.position = position;
                 deck[cardNumber].InitMove(position, correntRotation, 0.8f);
