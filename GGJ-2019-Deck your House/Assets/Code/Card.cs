@@ -131,6 +131,25 @@ public class Card : MonoBehaviour
         player2Rated = true;
     }
 
+    public void ShowPlayerRating(GameManager.TurnPhase turnPhase)
+    {
+        if (turnPhase == GameManager.TurnPhase.Player1)
+        {
+            yourValue.text = player1Rating.ToString();
+            theirValue.text = "?";
+        }
+        else if (turnPhase == GameManager.TurnPhase.Player2)
+        {
+            yourValue.text = player2Rating.ToString();
+            theirValue.text = "?";
+        }
+        else
+        {
+            yourValue.text = "?";
+            theirValue.text = "?";
+        }
+    }
+
     public void ResetRatingTexts()
     {
         yourValue.text = "";
@@ -188,10 +207,15 @@ public class Card : MonoBehaviour
             NewHolder(deck);
     }
 
-    public void PutIn(CardSlot slot)
+    public void PutIn(CardSlot slot, GameManager.TurnPhase turnPhase)
     {
         Deselect();
-        InitMove(slot.Position, true);
+
+        if (turnPhase == GameManager.TurnPhase.Player1)
+            InitMove(slot.Position, Quaternion.LookRotation(Vector3.up, Vector3.forward));
+        else if (turnPhase == GameManager.TurnPhase.Player2)
+            InitMove(slot.Position, Quaternion.LookRotation(Vector3.up, Vector3.back));
+
         status = CardStatus.CardSlot;
         NewHolder(slot);
     }
@@ -286,7 +310,7 @@ public class Card : MonoBehaviour
 
     public void Return(bool faceUp)
     {
-        InitMove(previousPos, faceUp);
+        InitMove(previousPos, faceUp, 0.4f);
     }
 
     public bool MoveFinished(float deltaTime)

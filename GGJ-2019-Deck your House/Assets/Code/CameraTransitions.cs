@@ -31,6 +31,7 @@ public class CameraTransitions : MonoBehaviour
             {
                 transform.rotation = endRot;
                 moving = false;
+                GameManager.Instance.CameraMoveFinished();
             }
             else
             {
@@ -44,29 +45,40 @@ public class CameraTransitions : MonoBehaviour
     {
         startRot = transform.rotation;
         timer = 0f;
-        timerEnd = 0.5f;
 
         switch (turnPhase)
         {
             case GameManager.TurnPhase.Player1:
                 endRot = player1;
+                timerEnd = 0.5f;
+                moving = true;
                 break;
             case GameManager.TurnPhase.Wait2:
                 endRot = wait2;
+                timerEnd = 0.75f;
+                StartCoroutine(DelayMoving());
                 break;
             case GameManager.TurnPhase.Player2:
                 endRot = player2;
+                timerEnd = 0.5f;
+                moving = true;
                 break;
             case GameManager.TurnPhase.Wait1:
                 endRot = wait1;
+                timerEnd = 0.75f;
+                StartCoroutine(DelayMoving());
                 break;
         }
-
-        moving = true;
     }
 
     private float SmoothLerpTime(float t)
     {
         return t * t * t * (t * (6f * t - 15f) + 10f);
+    }
+
+    IEnumerator DelayMoving()
+    {
+        yield return new WaitForSeconds(0.6f);
+        moving = true;
     }
 }

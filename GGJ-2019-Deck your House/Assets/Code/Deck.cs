@@ -60,7 +60,7 @@ public class Deck : CardHolder
             position = cards[i].transform.position;
             position.y += i * cardThickness;
             cards[i].transform.position = position;
-            cards[i].transform.rotation = Quaternion.LookRotation(Vector3.down, Vector3.forward);
+            cards[i].transform.rotation = Quaternion.LookRotation(Vector3.down, Vector3.right);
         }
 
         cards.Reverse();
@@ -110,7 +110,7 @@ public class Deck : CardHolder
         get
         {
             float randomAngle = Random.Range(-30f, 30f);
-            return Quaternion.Euler(270f, 180f + randomAngle, 0f);
+            return Quaternion.Euler(270f, 270f + randomAngle, 0f);
         }
     }
 

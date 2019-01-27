@@ -38,7 +38,7 @@ public class Discard : CardHolder
         get
         {
             float randomAngle = Random.Range(-30f, 30f);
-            return Quaternion.Euler(270f, 180f + randomAngle, 0f);
+            return Quaternion.Euler(270f, 90f + randomAngle, 0f);
         }
     }
 

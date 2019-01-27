@@ -42,4 +42,15 @@ public class CardSlot : MonoBehaviour, IHolder
     {
         return transform;
     }
+
+    public void AlignCards(GameManager.TurnPhase turnPhase)
+    {
+        if (currentCard != null)
+        {
+            if (turnPhase == GameManager.TurnPhase.Player1)
+                currentCard.InitMove(Position, Quaternion.LookRotation(Vector3.up, Vector3.forward));
+            else if (turnPhase == GameManager.TurnPhase.Player2)
+                currentCard.InitMove(Position, Quaternion.LookRotation(Vector3.up, Vector3.back));
+        }
+    }
 }

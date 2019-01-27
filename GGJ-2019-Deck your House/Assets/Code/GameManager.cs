@@ -87,6 +87,11 @@ public class GameManager : MonoBehaviour
     public bool quickStart = false;
 
     public CameraTransitions cameraTransitions;
+    public Camera sceneCamera;
+
+    public Room player1Room;
+    public Room player2Room;
+    public Room commonRoom;
 
     public void Start()
     {
@@ -96,9 +101,21 @@ public class GameManager : MonoBehaviour
         if (cameraTransitions == null)
             cameraTransitions = GameObject.Find("Camera mount").GetComponent<CameraTransitions>();
 
+        if (sceneCamera == null)
+        {
+            sceneCamera = GameObject.Find("Camera mount/Main Camera").GetComponent<Camera>();
+
+            if (sceneCamera == null)
+            {
+                sceneCamera = GameObject.Find("Main Camera").GetComponent<Camera>();
+            }
+        }
+
         deck.Initialize();
         deck.Shuffle();
         deck.Organize();
+
+        cardArray = deck.GetWholeDeck();
 
         if (quickStart)
         {
@@ -194,7 +211,7 @@ public class GameManager : MonoBehaviour
              selectedCard != null &&
              !playedCard )
         {
-            selectedCard.PutIn(slot);
+            selectedCard.PutIn(slot, turnPhase);
             selectedCard = null;
 
             if (commonroom && player1)
@@ -259,6 +276,48 @@ public class GameManager : MonoBehaviour
         InitNextTurn();
     }
 
+    public void ConfirmSelected()
+    {
+
+    }
+
+    public void CancelSelected()
+    {
+
+    }
+
+    public void CameraMoveFinished()
+    {
+        if (phase == Phase.RatingsPlayer)
+        {
+            tableGrid.transform.position = sceneCamera.transform.position + sceneCamera.transform.forward * 10f;
+
+            if (turnPhase == TurnPhase.Player1)
+            {
+                tableGrid.transform.rotation = Quaternion.Euler(-75f, 180f, 0f);
+                //tableGrid.transform.rotation = Quaternion.LookRotation(sceneCamera.transform.position - focalPoint.position);
+
+                Debug.DrawLine(tableGrid.transform.position, tableGrid.transform.position + 10f * tableGrid.transform.forward, Color.red, 10f);
+
+                cardArray = deck.GetWholeDeck();
+                tableGrid.Reset(cardArray);
+            }
+            else if (turnPhase == TurnPhase.Player2)
+            {
+                tableGrid.transform.rotation = Quaternion.Euler(-75f, 0f, 0f);
+                // tableGrid.transform.rotation = Quaternion.LookRotation(sceneCamera.transform.position - focalPoint.position);
+
+                Debug.DrawLine(tableGrid.transform.position, tableGrid.transform.position + 10f * tableGrid.transform.forward, Color.red, 10f);
+
+                cardArray = deck.GetWholeDeck();
+                tableGrid.Reset(cardArray);
+            }
+        }
+
+        UpdateCardRatings();
+    }
+
+#region Turns
     private void InitNextTurn()
     {
         if (phase == Phase.RatingsPlayer)
@@ -280,9 +339,6 @@ public class GameManager : MonoBehaviour
             expecting = Expecting.Card;
             ratingToGive = 10;
             UI.Instance.ShowUI(false);
-
-            cardArray = deck.GetWholeDeck();
-            tableGrid.Reset(cardArray);
         }
         else if (turnPhase == TurnPhase.Player1)
         {
@@ -301,9 +357,6 @@ public class GameManager : MonoBehaviour
 
             deck.Shuffle();
             deck.Organize();
-
-            cardArray = deck.GetWholeDeck();
-            tableGrid.Reset(cardArray);
         }
         else if (turnPhase == TurnPhase.Player2)
         {
@@ -396,8 +449,12 @@ public class GameManager : MonoBehaviour
             UI.Instance.UpdateText("Hand the device to player 1.", "Turn " + turnNumber);
         }
 
+        player1Room.AlignAllCards(turnPhase);
+        player2Room.AlignAllCards(turnPhase);
+        commonRoom.AlignAllCards(turnPhase);
         cameraTransitions.TransitionCamera(turnPhase);
     }
+#endregion Turns
 
 #region Ratings
 
@@ -433,7 +490,18 @@ public class GameManager : MonoBehaviour
 
     private void FocusCard(Card card)
     {
-        card.InitMove(focalPoint.position, true, 0.4f);
+        focalPoint.position = sceneCamera.transform.position + sceneCamera.transform.forward * 3f;
+
+        if (turnPhase == TurnPhase.Player1)
+        {
+            focalPoint.rotation = Quaternion.LookRotation(sceneCamera.transform.position - focalPoint.position, Vector3.forward);
+        }
+        else if (turnPhase == TurnPhase.Player2)
+        {
+            focalPoint.rotation = Quaternion.LookRotation(sceneCamera.transform.position - focalPoint.position, Vector3.back);
+        }
+
+        card.InitMove(focalPoint.position, focalPoint.rotation, 0.4f);
         card.Select();
         selectedCard = card;
         expecting = Expecting.RatingConfirmation;
@@ -515,11 +583,33 @@ public class GameManager : MonoBehaviour
             else if (!playedCard && playerDiscard)
                 expecting = Expecting.CardSlotOrDiscardPile;
         }
+        else
+        {
+            selectedCard.Deselect();
+            card.Select();
+            selectedCard = card;
+        }
     }
 #endregion NormalTurn
 
     private void CountScores()
     {
 
+    }
+
+    private void UpdateCardRatings()
+    {
+        foreach (Card card in cardArray)
+        {
+            card.ShowPlayerRating(turnPhase);
+        }
+    }
+
+    private void AlignCards()
+    {
+        foreach (Card card in cardArray)
+        {
+
+        }
     }
 }

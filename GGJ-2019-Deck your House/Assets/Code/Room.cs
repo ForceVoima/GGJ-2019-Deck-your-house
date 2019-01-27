@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class Room : MonoBehaviour
 {
@@ -22,8 +23,12 @@ public class Room : MonoBehaviour
     public int fullSlots = 0;
     public int totalSlots = 0;
 
+    public List<CardSlot> allSlots;
+
     public void Start()
     {
+        allSlots = new List<CardSlot>();
+
         CardSlot[] slots = GetComponentsInChildren<CardSlot>();
 
         totalSlots = slots.Length;
@@ -33,6 +38,15 @@ public class Room : MonoBehaviour
         foreach (CardSlot slot in slots)
         {
             slot.SetParentRoom(this);
+            allSlots.Add(slot);
+        }
+    }
+
+    public void AlignAllCards(GameManager.TurnPhase turnPhase)
+    {
+        foreach (CardSlot slot in allSlots)
+        {
+            slot.AlignCards(turnPhase);
         }
     }
 }
