@@ -276,6 +276,8 @@ public class GameManager : MonoBehaviour
             {
                 playerDiscard = true;
                 expecting = Expecting.Card;
+
+                UI.Instance.UpdateInstructions("Play 1 card OR discard another cards to play 1 from the discard pile.");
             }
 
             else if (playedCard && !playerDiscard)
