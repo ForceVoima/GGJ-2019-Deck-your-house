@@ -25,7 +25,12 @@ public class Player : MonoBehaviour
     {
         if (sceneCamera == null)
         {
-            sceneCamera = GameObject.Find("Main Camera").GetComponent<Camera>();
+            sceneCamera = GameObject.Find("Camera mount/Main Camera").GetComponent<Camera>();
+
+            if (sceneCamera == null)
+            {
+                sceneCamera = GameObject.Find("Main Camera").GetComponent<Camera>();
+            }
         }
     }
     

@@ -86,10 +86,15 @@ public class GameManager : MonoBehaviour
 
     public bool quickStart = false;
 
+    public CameraTransitions cameraTransitions;
+
     public void Start()
     {
         if (focalPoint == null)
             focalPoint = transform.Find("Focal point").transform;
+
+        if (cameraTransitions == null)
+            cameraTransitions = GameObject.Find("Camera mount").GetComponent<CameraTransitions>();
 
         deck.Initialize();
         deck.Shuffle();
@@ -314,6 +319,8 @@ public class GameManager : MonoBehaviour
             UI.Instance.ShowUI(true);
             UI.Instance.UpdateText("Hand the device to player 1.", "Turn " + turnNumber);
         }
+
+        cameraTransitions.TransitionCamera(turnPhase);
     }
 
     private void NextNormalTurn()
@@ -388,6 +395,8 @@ public class GameManager : MonoBehaviour
             UI.Instance.ShowUI(true);
             UI.Instance.UpdateText("Hand the device to player 1.", "Turn " + turnNumber);
         }
+
+        cameraTransitions.TransitionCamera(turnPhase);
     }
 
 #region Ratings
