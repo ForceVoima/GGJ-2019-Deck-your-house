@@ -40,7 +40,7 @@ GameObject:
   - component: {fileID: 114192767590949744}
   - component: {fileID: 65418714019750960}
   m_Layer: 8
-  m_Name: Baking supplies
+  m_Name: Dishwasher
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -255,7 +255,7 @@ MeshRenderer:
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
   m_Materials:
-  - {fileID: 2100000, guid: bbf96e09a03176944af5143198cb52e3, type: 2}
+  - {fileID: 2100000, guid: 4cf50e777dcab4f4aacd9b996dd9f5a0, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -354,8 +354,8 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-  m_text: All that you need to bake cookies, cakes, muffins and other pastries! They
-    might take up a lot of space, but become indespensable when hosting a party.
+  m_text: Don't let those dirty dishes stack up next to the sink! There has to be
+    a better way to deal with those...
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: d62a573c923f5cb47b8ff65261033b90, type: 2}
   m_sharedMaterial: {fileID: 2164040, guid: d62a573c923f5cb47b8ff65261033b90, type: 2}
@@ -465,7 +465,7 @@ MonoBehaviour:
   player1Rated: 0
   player2Rating: 0
   player2Rated: 0
-  cardNameString: Baking supplies
+  cardNameString: Dishwasher
   selected: 0
   moving: 0
   faceUp: 1
@@ -739,7 +739,7 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-  m_text: Baking supplies
+  m_text: Dishwasher
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: d62a573c923f5cb47b8ff65261033b90, type: 2}
   m_sharedMaterial: {fileID: 2164040, guid: d62a573c923f5cb47b8ff65261033b90, type: 2}
