@@ -134,7 +134,7 @@ public class Deck : CardHolder
 
     IEnumerator DealCards(GameManager.TurnPhase turnPhase)
     {
-        Debug.Log("Deck " + name + " dealing cards when " + turnPhase);
+        // Debug.Log("Deck " + name + " dealing cards when " + turnPhase);
 
         while (cardsToDeal > 0)
         {
