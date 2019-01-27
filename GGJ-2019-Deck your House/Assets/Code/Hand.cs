@@ -45,6 +45,11 @@ public class Hand : CardHolder, IHolder
         UpdateCardPositions();
     }
 
+    public void Organize()
+    {
+        UpdateCardPositions();
+    }
+
     public void Organize(GameManager.TurnPhase turnPhase)
     {
         UpdateCardPositions();

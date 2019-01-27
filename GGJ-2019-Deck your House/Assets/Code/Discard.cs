@@ -54,6 +54,7 @@ public class Discard : CardHolder
     {
         while (cardsToDeal > 0)
         {
+            cards[cards.Count - 1].ShowAllRatings(GameManager.Instance.WhoseTurn);
             cards[cards.Count - 1].PutIn(dealToHand);
             cardsToDeal--;
 
@@ -61,7 +62,7 @@ public class Discard : CardHolder
         }
 
         yield return new WaitForSeconds(0.5f);
-        dealToHand.Organize(GameManager.Instance.WhoseTurn);
+        dealToHand.Organize();
     }
 
     public void UpdateAllRatings(GameManager.TurnPhase turnPhase)

@@ -136,6 +136,7 @@ public class Deck : CardHolder
     {
         while (cardsToDeal > 0)
         {
+            cards[cards.Count - 1].ShowPlayerRating(turnPhase);
             cards[cards.Count - 1].PutIn(dealToHand);
             cardsToDeal--;
 
@@ -143,6 +144,6 @@ public class Deck : CardHolder
         }
 
         yield return new WaitForSeconds(0.5f);
-        dealToHand.Organize(turnPhase);
+        dealToHand.Organize();
     }
 }
