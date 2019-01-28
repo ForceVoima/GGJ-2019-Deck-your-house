@@ -36,29 +36,64 @@ public class Player : MonoBehaviour
     
     void Update()
     {
+        #if UNITY_STANDALONE_WIN
         if (Input.GetMouseButtonDown(button: 0))
+            HandleInputs();
+        /*
+        Tested drag'n'drop:
+
+        else if (Input.GetMouseButtonUp(button: 0))
+            HandleInputs();
+        */
+
+        #endif
+
+        #if UNITY_ANDROID
+
+        foreach (Touch touch in Input.touches)
         {
-            clickedItem = WhatWasClicked();
-
-            if (clickedItem == ClickedItem.Card)
+            if (touch.fingerId == 0)
             {
-                GameManager.Instance.CardSelected(selectedCard);
-            }
+                if (Input.GetTouch(0).phase == TouchPhase.Began)
+                {
+                    HandleInputs();
+                }
+                /*
+                Tested drag'n'drop:
 
-            else if (clickedItem == ClickedItem.CardSlot)
-            {
-                GameManager.Instance.CardSlotSelected(clickedCardSlot);
+                else if (Input.GetTouch(0).phase == TouchPhase.Ended)
+                {
+                    HandleInputs();
+                }
+                */
             }
+        }
 
-            else if (clickedItem == ClickedItem.DiscardPile)
-            {
-                GameManager.Instance.DiscardPileSelected(clickedDiscardPile);
-            }
+        #endif
+    }
 
-            else if (clickedItem == ClickedItem.None)
-            {
-                GameManager.Instance.NoneSelected();
-            }
+    public void HandleInputs()
+    {
+        clickedItem = WhatWasClicked();
+
+        if (clickedItem == ClickedItem.Card)
+        {
+            GameManager.Instance.CardSelected(selectedCard);
+        }
+
+        else if (clickedItem == ClickedItem.CardSlot)
+        {
+            GameManager.Instance.CardSlotSelected(clickedCardSlot);
+        }
+
+        else if (clickedItem == ClickedItem.DiscardPile)
+        {
+            GameManager.Instance.DiscardPileSelected(clickedDiscardPile);
+        }
+
+        else if (clickedItem == ClickedItem.None)
+        {
+            GameManager.Instance.NoneSelected();
         }
     }
 

@@ -25,6 +25,8 @@ public class Hand : CardHolder, IHolder
     [Range(-180f, 180f)]
     public float notYourTurnAngle = 0f;
 
+    public bool instantAdjust = false;
+
     public bool player2 = false;
 
     /*
@@ -48,6 +50,12 @@ public class Hand : CardHolder, IHolder
     public void Organize()
     {
         UpdateCardPositions();
+    }
+
+    private void LateUpdate()
+    {
+        if (instantAdjust)
+            UpdateCardPositions();
     }
 
     public void Organize(GameManager.TurnPhase turnPhase)
@@ -98,11 +106,13 @@ public class Hand : CardHolder, IHolder
 			currentPos += transform.position;
 			currentPos -= radius * forward;
 
-            /*
-			cards[0].transform.position = currentPos;
-			cards[0].transform.rotation = currentRot;
-            */
-            cards[0].InitMove(currentPos, currentRot);
+            if (instantAdjust)
+			{
+                cards[0].transform.position = currentPos;
+			    cards[0].transform.rotation = currentRot;
+            }
+            else
+                cards[0].InitMove(currentPos, currentRot, 0.5f);
 
             return;
 		}
@@ -140,11 +150,13 @@ public class Hand : CardHolder, IHolder
 			currentPos += transform.position;
 			currentPos -= radius * forward;
 
-            /*
-			cards[i].transform.position = currentPos;
-			cards[i].transform.rotation = currentRot;
-            */
-            cards[i].InitMove(currentPos, currentRot, 0.5f);
+            if (instantAdjust)
+			{
+                cards[i].transform.position = currentPos;
+			    cards[i].transform.rotation = currentRot;
+            }
+            else
+                cards[i].InitMove(currentPos, currentRot, 0.5f);
 		}
 	}
 

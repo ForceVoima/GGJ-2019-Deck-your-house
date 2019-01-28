@@ -95,6 +95,7 @@ public class GameManager : MonoBehaviour
     public int player2commonRoomCards = 0;
 
     public bool quickStart = false;
+    public bool android = false;
 
     public CameraTransitions cameraTransitions;
     public Camera sceneCamera;
@@ -310,7 +311,20 @@ public class GameManager : MonoBehaviour
 
     public void ContinueSelected()
     {
-        InitNextTurn();
+        if (phase == Phase.RatingsPlayer ||
+            phase == Phase.NormalTurns)
+        {
+            if ( (turnPhase == TurnPhase.Wait1 ||
+                turnPhase == TurnPhase.Wait2) )
+            {
+                InitNextTurn();
+            }
+        }
+
+        else if (phase == Phase.EndScreen)
+        {
+            InitNextTurn();
+        }
     }
 
     public void ConfirmSelected()
@@ -331,20 +345,20 @@ public class GameManager : MonoBehaviour
 
             if (turnPhase == TurnPhase.Player1)
             {
-                tableGrid.transform.rotation = Quaternion.Euler(-75f, 180f, 0f);
-                //tableGrid.transform.rotation = Quaternion.LookRotation(sceneCamera.transform.position - focalPoint.position);
-
-                Debug.DrawLine(tableGrid.transform.position, tableGrid.transform.position + 10f * tableGrid.transform.forward, Color.red, 10f);
+                if (android)
+                    tableGrid.transform.rotation = Quaternion.Euler(-80f, 180f, 0f);
+                else
+                    tableGrid.transform.rotation = Quaternion.Euler(-75f, 180f, 0f);
 
                 cardArray = deck.GetWholeDeck();
                 tableGrid.Reset(cardArray);
             }
             else if (turnPhase == TurnPhase.Player2)
             {
-                tableGrid.transform.rotation = Quaternion.Euler(-75f, 0f, 0f);
-                // tableGrid.transform.rotation = Quaternion.LookRotation(sceneCamera.transform.position - focalPoint.position);
-
-                Debug.DrawLine(tableGrid.transform.position, tableGrid.transform.position + 10f * tableGrid.transform.forward, Color.red, 10f);
+                if (android)
+                    tableGrid.transform.rotation = Quaternion.Euler(-80f, 0f, 0f);
+                else
+                    tableGrid.transform.rotation = Quaternion.Euler(-75f, 0f, 0f);
 
                 cardArray = deck.GetWholeDeck();
                 tableGrid.Reset(cardArray);
