@@ -68,6 +68,8 @@ public class Card : MonoBehaviour
         get { return status; }
     }
 
+    private Hand currentHand;
+
     public bool Selectable
     {
         get
@@ -200,12 +202,24 @@ public class Card : MonoBehaviour
     {
         selected = true;
         glowEffect.SetActive(true);
+
+        if (status == CardStatus.PlayerHand &&
+            currentHand != null)
+        {
+            currentHand.SelectCard(this);
+        }
     }
 
     public void Deselect()
     {
         selected = false;
         glowEffect.SetActive(false);
+
+        if (status == CardStatus.PlayerHand &&
+            currentHand != null)
+        {
+            currentHand.DeselectCard(this);
+        }
     }
 
     private void OnMouseEnter()
@@ -227,6 +241,8 @@ public class Card : MonoBehaviour
         status = CardStatus.Grid;
 
         NewHolder(grid);
+
+        currentHand = null;
     }
 
     public void PutIn(Deck deck, bool changeOwner)
@@ -237,6 +253,8 @@ public class Card : MonoBehaviour
 
         if (changeOwner)
             NewHolder(deck);
+
+        currentHand = null;
     }
 
     public void PutIn(CardSlot slot, GameManager.TurnPhase turnPhase)
@@ -250,6 +268,8 @@ public class Card : MonoBehaviour
 
         status = CardStatus.CardSlot;
         NewHolder(slot);
+
+        currentHand = null;
     }
 
     public void PutIn(Hand hand)
@@ -260,6 +280,8 @@ public class Card : MonoBehaviour
         NewHolder(hand);
 
         cardCollider.enabled = true;
+
+        currentHand = hand;
     }
 
     public void PutIn(Discard discard)
@@ -269,6 +291,8 @@ public class Card : MonoBehaviour
         status = CardStatus.DiscardPile;
         NewHolder(discard);
         cardCollider.enabled = false;
+
+        currentHand = null;
     }
 
     public void InitializeHolder(IHolder holder)

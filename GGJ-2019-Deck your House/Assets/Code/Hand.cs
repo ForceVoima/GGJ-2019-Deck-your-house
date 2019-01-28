@@ -29,6 +29,9 @@ public class Hand : CardHolder, IHolder
 
     public bool player2 = false;
 
+    public Card selectedCard;
+    public int selectedCardIndex = -1;
+
     /*
     public bool turning = false;
     
@@ -72,21 +75,6 @@ public class Hand : CardHolder, IHolder
 
     private void UpdateCardPositions()
 	{
-		Vector3 up = transform.up;				// Green arrow
-		Vector3 forward = transform.forward;	// Blue arrow
-		Vector3 right = transform.right;		// Red arrow
-
-		float minAngle = -maxAngle / 2f;
-		float currentAngle = 0f;
-		float halfAngle = 0f;
-		int total = cards.Count - 1;
-
-		Vector3 currentPos = new Vector3();
-		Vector3 halfAngleVector = new Vector3();
-		Quaternion currentRot = new Quaternion();
-
-        angles = new float[cards.Count];
-
         // No cards left
 		if (cards.Count <= 0)
 		{
@@ -98,13 +86,11 @@ public class Hand : CardHolder, IHolder
 		{
             angles[0] = 0f;
 
-			currentPos = radius * forward;
+			Vector3 currentPos = radius * transform.forward;
 
-			halfAngleVector = radius * forward;
-
-			currentRot = Quaternion.LookRotation(up, currentPos);
+			Quaternion currentRot = Quaternion.LookRotation(transform.up, currentPos);
 			currentPos += transform.position;
-			currentPos -= radius * forward;
+			currentPos -= radius * transform.forward;
 
             if (instantAdjust)
 			{
@@ -116,6 +102,132 @@ public class Hand : CardHolder, IHolder
 
             return;
 		}
+
+        if (selectedCardIndex == -1)
+        {
+            NormalArrangement();
+        }
+        else
+        {
+            FocusedArrangement();
+        }
+	}
+
+    private void FocusedArrangement()
+    {
+		float minimumAngle = -maxAngle / 2f;
+        float maximumAngle = maxAngle / 2f;
+        angles = new float[cards.Count];
+
+		int total = cards.Count - 1;
+
+        bool minGap = maxAngle > cardSeparation * (1f * total);
+
+        if (minGap)
+        {
+            minimumAngle = -(total) * cardSeparation / 2f;
+            maximumAngle = total * cardSeparation / 2f;
+        }
+
+        int focused = selectedCardIndex;
+        
+        if (focused == 0)
+            angles[focused] = minimumAngle;
+        else if (focused == total)
+            angles[focused] = maximumAngle;
+        else
+            angles[focused] = Mathf.Lerp(minimumAngle, maximumAngle, (focused * 1f) / (total * 1f) );
+
+        AdjustCard(focused, angles[focused], (radius + 0.25f));
+
+        int min = -1;
+        int max = -1;
+
+        float minA = 0f;
+        float maxA = 0f;
+
+        int previous = focused - 1;
+        int previousPrevious = focused - 2;
+        int next = focused + 1;
+        int nextNext = focused + 2;
+
+        if (previous > 0)
+        {
+            angles[previous] = angles[focused] - cardSeparation;
+            AdjustCard(previous, angles[previous]);
+
+            min = 0;
+            max = previous;
+
+            maxA = angles[previous];
+            minA = maxA - 2f * previous;
+
+            if (minA > minimumAngle)
+            {
+                minA = minimumAngle;
+            }
+
+            AdjustCardRange(min, max, minA, maxA);
+        }
+        else if (previous == 0)
+        {
+            angles[previous] = angles[focused] - cardSeparation;
+            AdjustCard(previous, angles[previous]);
+        }
+
+        
+        if (next < total)
+        {
+            angles[next] = angles[focused] + cardSeparation;
+            AdjustCard(next, angles[next]);
+
+            if (nextNext < total)
+            {
+                angles[nextNext] = angles[next] + cardSeparation;
+                AdjustCard(nextNext, angles[nextNext]);
+
+                min = nextNext;
+                max = total;
+
+                minA = angles[nextNext];
+                maxA = minA + 2f * (max - min);
+
+                if (maxA < maximumAngle)
+                {
+                    maxA = maximumAngle;
+                }
+                AdjustCardRange(min, max, minA, maxA);
+            }
+            else if (nextNext == total)
+            {
+                angles[nextNext] = angles[next] + cardSeparation;
+                AdjustCard(nextNext, angles[nextNext]);
+            }
+        }
+        else if (next == total)
+        {
+            angles[next] = angles[focused] + cardSeparation;
+            AdjustCard(next, angles[next]);
+        }
+    }
+
+    private void AdjustCardRange(int min, int max, float minA, float maxA)
+    {
+        int total = max - min;
+
+        for (int i = min; i <= max; i++)
+        {
+            AdjustCard(i, Mathf.Lerp(minA, maxA, ((i-min) * 1f) / ((total) * 1f)));
+        }
+    }
+
+    private void NormalArrangement()
+    {
+		float minAngle = -maxAngle / 2f;
+		float currentAngle = 0f;
+		int total = cards.Count - 1;
+
+        angles = new float[cards.Count];
 
         bool minGap = maxAngle > cardSeparation * (1f * total);
 
@@ -135,30 +247,41 @@ public class Hand : CardHolder, IHolder
                 currentAngle = minAngle + maxAngle / (1f * total) * (1f * i);
             }
             angles[i] = currentAngle;
-            currentAngle *= Mathf.Deg2Rad;
 
-			halfAngle = currentAngle * cardAnglingFactor;
-
-			currentPos = radius * Mathf.Cos(currentAngle) * forward +
-						 radius * Mathf.Sin(currentAngle) * right +
-						 cardThickness * i * up;
-
-			halfAngleVector = radius * Mathf.Cos(halfAngle) * forward +
-						 	  radius * Mathf.Sin(halfAngle) * right;
-
-			currentRot = Quaternion.LookRotation(up, halfAngleVector);
-			currentPos += transform.position;
-			currentPos -= radius * forward;
-
-            if (instantAdjust)
-			{
-                cards[i].transform.position = currentPos;
-			    cards[i].transform.rotation = currentRot;
-            }
-            else
-                cards[i].InitMove(currentPos, currentRot, 0.5f);
+            AdjustCard(i, currentAngle);
 		}
-	}
+    }
+    private void AdjustCard(int i, float angle)
+    {
+        AdjustCard(i, angle, radius);
+    }
+
+    private void AdjustCard(int i, float angle, float customRadius)
+    {
+        angles[i] = angle;
+        float currentAngle = angle * Mathf.Deg2Rad;
+
+        float halfAngle = currentAngle * cardAnglingFactor;
+
+        Vector3 currentPos = customRadius * Mathf.Cos(currentAngle) * transform.forward +
+                             customRadius * Mathf.Sin(currentAngle) * transform.right +
+                             cardThickness * i * transform.up;
+
+        Vector3 halfAngleVector = customRadius * Mathf.Cos(halfAngle) * transform.forward +
+                                  customRadius * Mathf.Sin(halfAngle) * transform.right;
+
+        Quaternion currentRot = Quaternion.LookRotation(transform.up, halfAngleVector);
+        currentPos += transform.position;
+        currentPos -= radius * transform.forward;
+
+        if (instantAdjust)
+        {
+            cards[i].transform.position = currentPos;
+            cards[i].transform.rotation = currentRot;
+        }
+        else
+            cards[i].InitMove(currentPos, currentRot, 0.5f);
+    }
 
     public void DiscardWholeHand(Discard discardPile)
     {
@@ -218,5 +341,24 @@ public class Hand : CardHolder, IHolder
         {
             card.ShowPlayerRating(turnPhase);
         }
+    }
+
+    public void SelectCard(Card card)
+    {
+        selectedCard = card;
+        selectedCardIndex = cards.IndexOf(card);
+
+        UpdateCardPositions();
+    }
+
+    public void DeselectCard(Card card)
+    {
+        if (selectedCard == card)
+        {
+            selectedCard = null;
+            selectedCardIndex = -1;
+        }
+
+        UpdateCardPositions();
     }
 }

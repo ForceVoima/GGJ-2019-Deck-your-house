@@ -457,6 +457,8 @@ MonoBehaviour:
   notYourTurnAngle: -75
   instantAdjust: 0
   player2: 0
+  selectedCard: {fileID: 0}
+  selectedCardIndex: -1
 --- !u!1 &140381581
 GameObject:
   m_ObjectHideFlags: 0
@@ -2065,7 +2067,7 @@ Prefab:
     - target: {fileID: 114216108582410826, guid: 5131f450bf6c7af448d3f5324c26a314,
         type: 2}
       propertyPath: quickStart
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 114216108582410826, guid: 5131f450bf6c7af448d3f5324c26a314,
         type: 2}
@@ -3212,6 +3214,8 @@ MonoBehaviour:
   notYourTurnAngle: 0
   instantAdjust: 0
   player2: 0
+  selectedCard: {fileID: 0}
+  selectedCardIndex: -1
 --- !u!1 &1558366347
 GameObject:
   m_ObjectHideFlags: 0
@@ -4071,6 +4075,8 @@ MonoBehaviour:
   notYourTurnAngle: 0
   instantAdjust: 0
   player2: 0
+  selectedCard: {fileID: 0}
+  selectedCardIndex: -1
 --- !u!1 &1986722687
 GameObject:
   m_ObjectHideFlags: 0
@@ -4441,6 +4447,8 @@ MonoBehaviour:
   notYourTurnAngle: -75
   instantAdjust: 0
   player2: 1
+  selectedCard: {fileID: 0}
+  selectedCardIndex: -1
 --- !u!1 &2139934919
 GameObject:
   m_ObjectHideFlags: 0

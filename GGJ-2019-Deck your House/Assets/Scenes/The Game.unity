@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.12731749, g: 0.13414757, b: 0.1210787, a: 1}
+  m_IndirectSpecularColor: {r: 0.1273174, g: 0.13414761, b: 0.12107885, a: 1}
 --- !u!157 &3
 LightmapSettings:
   m_ObjectHideFlags: 0
@@ -455,7 +455,10 @@ MonoBehaviour:
   angles: []
   yourTurnAngle: -15
   notYourTurnAngle: -75
+  instantAdjust: 0
   player2: 0
+  selectedCard: {fileID: 0}
+  selectedCardIndex: -1
 --- !u!1 &140381581
 GameObject:
   m_ObjectHideFlags: 0
@@ -931,6 +934,46 @@ Prefab:
         type: 2}
       propertyPath: m_isInputParsingRequired
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 224635859324850114, guid: 668a078a0da0da74ea062f8e4721c5d7,
+        type: 2}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 224635859324850114, guid: 668a078a0da0da74ea062f8e4721c5d7,
+        type: 2}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 224635859324850114, guid: 668a078a0da0da74ea062f8e4721c5d7,
+        type: 2}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 224635859324850114, guid: 668a078a0da0da74ea062f8e4721c5d7,
+        type: 2}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 224041515095822778, guid: 668a078a0da0da74ea062f8e4721c5d7,
+        type: 2}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 224041515095822778, guid: 668a078a0da0da74ea062f8e4721c5d7,
+        type: 2}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 224041515095822778, guid: 668a078a0da0da74ea062f8e4721c5d7,
+        type: 2}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 224041515095822778, guid: 668a078a0da0da74ea062f8e4721c5d7,
+        type: 2}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 668a078a0da0da74ea062f8e4721c5d7, type: 2}
@@ -3107,7 +3150,10 @@ MonoBehaviour:
   angles: []
   yourTurnAngle: 80
   notYourTurnAngle: 0
+  instantAdjust: 0
   player2: 0
+  selectedCard: {fileID: 0}
+  selectedCardIndex: -1
 --- !u!1 &1558366347
 GameObject:
   m_ObjectHideFlags: 0
@@ -3959,7 +4005,10 @@ MonoBehaviour:
   angles: []
   yourTurnAngle: 80
   notYourTurnAngle: 0
+  instantAdjust: 0
   player2: 0
+  selectedCard: {fileID: 0}
+  selectedCardIndex: -1
 --- !u!1 &1986722687
 GameObject:
   m_ObjectHideFlags: 0
@@ -4328,7 +4377,10 @@ MonoBehaviour:
   angles: []
   yourTurnAngle: -15
   notYourTurnAngle: -75
+  instantAdjust: 0
   player2: 1
+  selectedCard: {fileID: 0}
+  selectedCardIndex: -1
 --- !u!1 &2139934919
 GameObject:
   m_ObjectHideFlags: 0
